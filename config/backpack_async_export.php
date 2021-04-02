@@ -1,5 +1,5 @@
 <?php
-// config for Thomascombe/ClassName
-return [
 
+return [
+    'user_model' => 'App\Models\User',
 ];

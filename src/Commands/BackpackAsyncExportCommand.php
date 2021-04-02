@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Thomascombe\BackpackAsyncExport\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class BackpackAsyncExportCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'backpack_async_export';
 
     public $description = 'My command';
 

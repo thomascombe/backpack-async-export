@@ -1,6 +1,6 @@
 <?php
 
-namespace VendorName\Skeleton\Tests;
+namespace Thomascombe\BackpackAsyncExport\Tests;
 
 class ExampleTest extends TestCase
 {

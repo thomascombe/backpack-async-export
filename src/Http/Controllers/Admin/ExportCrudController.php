@@ -63,7 +63,7 @@ class ExportCrudController extends CrudController
         $mimetype = File::mimeType($export->storagePath);
         $fileNameExplode = explode('/', $export->{Export::COLUMN_FILENAME});
         return response()->streamDownload(
-            function () use ($export, $fileContent): void {
+            function () use ($fileContent): void {
                 echo $fileContent;
             },
             end($fileNameExplode),

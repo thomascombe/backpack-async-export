@@ -36,9 +36,9 @@ return [
 
 ## Usage
 
+Add export item in menu
 ```php
-$backpack_async_export = new Thomascombe\BackpackAsyncExport();
-echo $backpack_async_export->echoPhrase('Hello, Spatie!');
+php artisan backpack:add-sidebar-content "<li class='nav-item'><a class='nav-link' href='{{ backpack_url('export') }}'><i class='nav-icon la la-file-export'></i> <span>Export</span></a></li>"
 ```
 
 ## Testing

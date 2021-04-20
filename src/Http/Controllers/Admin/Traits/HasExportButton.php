@@ -16,18 +16,19 @@ trait HasExportButton
     protected function setupExportRoutes($segment, $routeName, $controller)
     {
         Route::get($segment . '/' . config('backpack_async_export.admin_route'), [
-            'as'        => $routeName.'.export',
-            'uses'      => $controller.'@export',
+            'as' => $routeName.'.export',
+            'uses' => $controller.'@export',
             'operation' => 'export',
         ]);
     }
 
     public function export(): RedirectResponse
     {
-        list ($export, $parameters) = $this->getExport();
+        list($export, $parameters) = $this->getExport();
 
         ExportJob::dispatch($export, $parameters);
         \Alert::info(__('backpack_async_export::export.notifications.queued'))->flash();
+
         return response()->redirectToRoute('export.index');
     }
 }

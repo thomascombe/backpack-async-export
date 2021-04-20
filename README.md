@@ -31,14 +31,71 @@ This is the contents of the published config file:
 
 ```php
 return [
+    'user_model' => 'App\Models\User',
+    'admin_route' => 'export',
+    'export_memory_limit' => '2048M',
 ];
 ```
 
 ## Usage
 
-Add export item in menu
-```php
+### Add export item in menu
+```bash
 php artisan backpack:add-sidebar-content "<li class='nav-item'><a class='nav-link' href='{{ backpack_url('export') }}'><i class='nav-icon la la-file-export'></i> <span>Export</span></a></li>"
+```
+
+### Create you export class
+```bash
+php artisan make:export UserExport --model=App\Models\User
+```
+For all details, have a look at [Laravel Excel Package](https://laravel-excel.com/)
+
+### Create your controller
+```bash
+php artisan backpack:crud {Name}CrudController
+```
+
+### Your controller need to implement interface
+```php
+use Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Interfaces\ExportableCrud;
+
+class {Name}CrudController extends CrudController implements ExportableCrud {}
+```
+
+### Use awesome trait
+```php
+use Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Traits\HasExportButton;
+```
+
+### Call method to add buttons
+```php
+public function setup()
+{
+    // ...
+    $this->addExportButtons();
+}
+```
+
+### Add method to your CRUD controller
+```php
+use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
+use Thomascombe\BackpackAsyncExport\Models\Export;
+
+public function getExport(): array
+{
+    $export = Export::create([
+        Export::COLUMN_USER_ID => backpack_user()->id,
+        Export::COLUMN_STATUS => ExportStatus::Created,
+        Export::COLUMN_FILENAME => sprintf('export/users_%s.xlsx', now()->toIso8601String()),
+        Export::COLUMN_EXPORT_TYPE => MyExportClass::class,
+    ]);
+    return [
+        $export,
+        [
+            // Export class parameters
+        ],
+    ];
+}
 ```
 
 ## Testing

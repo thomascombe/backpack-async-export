@@ -8,7 +8,7 @@ class CreateBackpackAsyncExportTable extends Migration
 {
     public function up()
     {
-        Schema::create('backpack_async_export_table', function (Blueprint $table) {
+        Schema::create('exports', function (Blueprint $table) {
             $table->id();
 
             $table->unsignedBigInteger('user_id');
@@ -25,5 +25,10 @@ class CreateBackpackAsyncExportTable extends Migration
                 ->references('id')
                 ->on('users');
         });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('exports');
     }
 }

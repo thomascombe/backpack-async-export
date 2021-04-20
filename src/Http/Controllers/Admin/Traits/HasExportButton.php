@@ -8,7 +8,7 @@ use Thomascombe\BackpackAsyncExport\Jobs\ExportJob;
 
 trait HasExportButton
 {
-    protected function addExportButton()
+    protected function addExportButtons()
     {
         $this->crud->addButton('top', 'export', 'view', 'backpack_async_export::buttons/export', 'end');
     }

@@ -12,5 +12,8 @@ return [
         'status' => 'Status',
         'error' => 'Error',
         'completed_at' => 'Completed at',
-    ]
+    ],
+    'buttons' => [
+        'exports' => 'Export',
+    ],
 ];

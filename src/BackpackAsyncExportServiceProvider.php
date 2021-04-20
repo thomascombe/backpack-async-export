@@ -20,6 +20,8 @@ class BackpackAsyncExportServiceProvider extends PackageServiceProvider
             ->hasConfigFile()
             ->hasViews()
             ->hasMigration('create_backpack_async_export_table')
+            ->hasRoutes('backpack/export')
+            ->hasTranslations()
             ->hasCommand(BackpackAsyncExportCommand::class);
     }
 }

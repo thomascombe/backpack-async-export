@@ -22,7 +22,6 @@ class ExportCrudController extends CrudController
 {
     use ListOperation;
 
-
     public function setup()
     {
         CRUD::setModel(Export::class);
@@ -37,8 +36,8 @@ class ExportCrudController extends CrudController
     protected function setupDownloadRoutes($segment, $routeName, $controller)
     {
         Route::get($segment . '/{export}/download', [
-            'as'        => $routeName.'.download',
-            'uses'      => $controller.'@download',
+            'as' => $routeName.'.download',
+            'uses' => $controller.'@download',
             'operation' => 'download',
         ]);
     }
@@ -55,13 +54,14 @@ class ExportCrudController extends CrudController
 
     public function download(Export $export): StreamedResponse
     {
-        if (ExportStatus::Successful !== $export->{Export::COLUMN_STATUS} || !file_exists($export->storage_path)) {
+        if (ExportStatus::Successful !== $export->{Export::COLUMN_STATUS} || ! file_exists($export->storage_path)) {
             abort(Response::HTTP_NOT_FOUND);
         }
 
         $fileContent = file_get_contents($export->storagePath);
         $mimetype = File::mimeType($export->storagePath);
         $fileNameExplode = explode('/', $export->{Export::COLUMN_FILENAME});
+
         return response()->streamDownload(
             function () use ($fileContent): void {
                 echo $fileContent;

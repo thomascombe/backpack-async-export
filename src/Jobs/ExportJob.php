@@ -3,17 +3,20 @@
 namespace Thomascombe\BackpackAsyncExport\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Maatwebsite\Excel\Facades\Excel;
 use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
 use Thomascombe\BackpackAsyncExport\Models\Export;
 
 class ExportJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     private Export $export;
     private array $exportParameters;
@@ -42,7 +45,7 @@ class ExportJob implements ShouldQueue
                 Export::COLUMN_STATUS => ExportStatus::Successful,
                 Export::COLUMN_COMPLETED_AT => now(),
             ]);
-        } catch (\Exception|\Throwable $exception) {
+        } catch (\Exception | \Throwable $exception) {
             $this->export->update([
                 Export::COLUMN_STATUS => ExportStatus::Error,
                 Export::COLUMN_ERROR => $exception->getMessage(),

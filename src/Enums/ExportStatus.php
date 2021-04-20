@@ -16,7 +16,7 @@ abstract class ExportStatus
     public static function items(): array
     {
         $reflectionClass = new \ReflectionClass(static::class);
+
         return $reflectionClass->getConstants();
     }
 }
-

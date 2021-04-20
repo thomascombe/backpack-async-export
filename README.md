@@ -1,8 +1,9 @@
 # Laravel Backpack Async Export
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/thomascombe/backpack_async_export.svg?style=flat-square)](https://packagist.org/packages/thomascombe/backpack_async_export)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/thomascombe/backpack_async_export/run-tests?label=tests)](https://github.com/thomascombe/backpack_async_export/actions?query=workflow%3ATests+branch%3Amaster)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/thomascombe/backpack_async_export/Check%20&%20fix%20styling?label=code%20style)](https://github.com/thomascombe/backpack_async_export/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amaster)
+[comment]: <> ([![GitHub Tests Action Status]&#40;https://img.shields.io/github/workflow/status/thomascombe/backpack_async_export/run-tests?label=tests&#41;]&#40;https://github.com/thomascombe/backpack_async_export/actions?query=workflow%3ATests+branch%3Amaster&#41;)
+[comment]: <> ([![GitHub Code Style Action Status]&#40;https://img.shields.io/github/workflow/status/thomascombe/backpack_async_export/Check%20&%20fix%20styling?label=code%20style&#41;]&#40;https://github.com/thomascombe/backpack_async_export/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amaster&#41;)
+[![PHPCS check](https://github.com/thomascombe/backpack-async-export/actions/workflows/phpcs.yml/badge.svg)](https://github.com/thomascombe/backpack-async-export/actions/workflows/phpcs.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/thomascombe/backpack_async_export.svg?style=flat-square)](https://packagist.org/packages/thomascombe/backpack_async_export)
 
 This is a package to manage async export in Backpack for Laravel

@@ -25,7 +25,7 @@ class ExportCrudController extends CrudController
     public function setup()
     {
         CRUD::setModel(Export::class);
-        CRUD::setRoute(sprintf('%s/%s', config('backpack.base.route_prefix'), config('backpack_async_export')));
+        CRUD::setRoute(sprintf('%s/%s', config('backpack.base.route_prefix'), config('backpack_async_export.admin_route')));
         CRUD::setEntityNameStrings(
             __('backpack_async_export::export.name.singular'),
             __('backpack_async_export::export.name.plurial')
@@ -48,7 +48,7 @@ class ExportCrudController extends CrudController
         CRUD::column('export_type')->label(__('backpack_async_export::export.columns.export_type'));
         CRUD::column('filename')->label(__('backpack_async_export::export.columns.filename'));
         CRUD::column('status')->label(__('backpack_async_export::export.columns.status'));
-        CRUD::column('error')->label(__('backpack_async_export::xport.columns.error'));
+        CRUD::column('error')->label(__('backpack_async_export::export.columns.error'));
         CRUD::column('completed_at')->label(__('backpack_async_export::export.columns.completed_at'));
     }
 

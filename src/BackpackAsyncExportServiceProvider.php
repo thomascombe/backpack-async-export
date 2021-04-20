@@ -4,7 +4,6 @@ namespace Thomascombe\BackpackAsyncExport;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Thomascombe\BackpackAsyncExport\Commands\BackpackAsyncExportCommand;
 
 class BackpackAsyncExportServiceProvider extends PackageServiceProvider
 {

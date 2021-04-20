@@ -16,4 +16,7 @@ return [
     'buttons' => [
         'exports' => 'Export',
     ],
+    'notifications' => [
+        'queued' => 'Export launched! Results will be available when ready on "Export" tab',
+    ],
 ];

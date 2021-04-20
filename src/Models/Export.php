@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
 use Thomascombe\BackpackAsyncExport\Exports\ExportWithName;
+use Thomascombe\BackpackAsyncExport\Models\Interfaces\ExportInterface;
 
-class Export extends Model
+class Export extends Model implements ExportInterface
 {
     use CrudTrait;
     use SoftDeletes;

@@ -11,19 +11,19 @@ This is a package to manage async export in Backpack for Laravel
 You can install the package via composer:
 
 ```bash
-composer require thomascombe/backpack_async_export
+composer require thomascombe/backpack-async-export
 ```
 
 You can publish and run the migrations with:
 
 ```bash
-php artisan vendor:publish --provider="Thomascombe\BackpackAsyncExport\BackpackAsyncExportServiceProvider" --tag="backpack_async_export-migrations"
+php artisan vendor:publish --provider="Thomascombe\BackpackAsyncExport\BackpackAsyncExportServiceProvider" --tag="backpack-async-export-migrations"
 php artisan migrate
 ```
 
 You can publish the config file with:
 ```bash
-php artisan vendor:publish --provider="Thomascombe\BackpackAsyncExport\BackpackAsyncExportServiceProvider" --tag="backpack_async_export-config"
+php artisan vendor:publish --provider="Thomascombe\BackpackAsyncExport\BackpackAsyncExportServiceProvider" --tag="backpack-async-export-config"
 ```
 
 This is the contents of the published config file:

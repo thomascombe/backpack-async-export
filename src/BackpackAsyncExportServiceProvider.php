@@ -16,12 +16,11 @@ class BackpackAsyncExportServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package
-            ->name('backpack_async_export')
+            ->name('backpack-async-export')
             ->hasConfigFile()
             ->hasViews()
-            ->hasMigration('create_backpack_async_export_table')
+            ->hasMigrations(['create_backpack_async_export_table'])
             ->hasRoutes('backpack/export')
-            ->hasTranslations()
-            ->hasCommand(BackpackAsyncExportCommand::class);
+            ->hasTranslations();
     }
 }

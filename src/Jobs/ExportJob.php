@@ -35,7 +35,7 @@ class ExportJob implements ShouldQueue
         ]);
 
         try {
-            ini_set('memory_limit', config('backpack_async_export.export_memory_limit'));
+            ini_set('memory_limit', config('backpack-async-export.export_memory_limit'));
             $exportClass = $this->export->{Export::COLUMN_EXPORT_TYPE};
             Excel::store(new $exportClass(...$this->exportParameters), $this->export->{Export::COLUMN_FILENAME});
 
@@ -50,7 +50,7 @@ class ExportJob implements ShouldQueue
                 Export::COLUMN_STATUS => ExportStatus::Error,
                 Export::COLUMN_ERROR => $exception->getMessage(),
             ]);
-            Log::error(__('backpack_async_export::export.errors.global-export'), ['exception' => $exception]);
+            Log::error(__('backpack-async-export::export.errors.global-export'), ['exception' => $exception]);
         }
     }
 }

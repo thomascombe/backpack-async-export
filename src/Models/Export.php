@@ -41,7 +41,7 @@ class Export extends Model implements ExportInterface
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(config('backpack_async_export.user_model'));
+        return $this->belongsTo(config('backpack-async-export.user_model'));
     }
 
     public function getExportTypeNameAttribute(): string

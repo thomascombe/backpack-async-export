@@ -1,10 +1,12 @@
 {
-    "name": "thomascombe/backpack_async_export",
+    "name": "thomascombe/backpack-async-export",
     "description": "This is a package to manage async export in Backpack for Laravel",
     "keywords": [
         "thomascombe",
         "laravel",
-        "backpack_async_export"
+        "backpack-async-export",
+        "backpack",
+        "export"
     ],
     "homepage": "https://github.com/thomascombe/backpack_async_export",
     "license": "MIT",

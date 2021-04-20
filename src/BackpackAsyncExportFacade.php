@@ -11,6 +11,6 @@ class BackpackAsyncExportFacade extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'backpack_async_export';
+        return 'backpack-async-export';
     }
 }

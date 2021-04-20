@@ -10,12 +10,12 @@ trait HasExportButton
 {
     protected function addExportButtons()
     {
-        $this->crud->addButton('top', 'export', 'view', 'backpack_async_export::buttons/export', 'end');
+        $this->crud->addButton('top', 'export', 'view', 'backpack-async-export::buttons/export', 'end');
     }
 
     protected function setupExportRoutes($segment, $routeName, $controller)
     {
-        Route::get($segment . '/' . config('backpack_async_export.admin_route'), [
+        Route::get($segment . '/' . config('backpack-async-export.admin_route'), [
             'as' => $routeName.'.export',
             'uses' => $controller.'@export',
             'operation' => 'export',
@@ -27,7 +27,7 @@ trait HasExportButton
         list($export, $parameters) = $this->getExport();
 
         ExportJob::dispatch($export, $parameters);
-        \Alert::info(__('backpack_async_export::export.notifications.queued'))->flash();
+        \Alert::info(__('backpack-async-export::export.notifications.queued'))->flash();
 
         return response()->redirectToRoute('export.index');
     }

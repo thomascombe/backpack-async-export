@@ -63,7 +63,7 @@ class Export extends Model implements ExportInterface
     {
         if (ExportStatus::Successful === $this->{self::COLUMN_STATUS}) {
             $url = route(
-                'export.download',
+                config('backpack-async-export.admin_route') . '.download',
                 [
                     'export' => $this->id,
                 ]

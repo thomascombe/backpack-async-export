@@ -53,7 +53,7 @@ trait HasExportButton
         ExportJob::dispatch($export, $parameters);
         \Alert::info(__('backpack-async-export::export.notifications.queued'))->flash();
 
-        return response()->redirectToRoute('export.index');
+        return response()->redirectToRoute(config('backpack-async-export.admin_route') . '.index');
     }
 
     /**

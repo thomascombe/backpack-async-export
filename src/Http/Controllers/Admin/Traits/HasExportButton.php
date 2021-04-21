@@ -68,7 +68,7 @@ trait HasExportButton
         $exportModel = $this->{$this->getExportMethodName($export)}();
         $parameters = $this->{$this->getExportParametersMethodName($export)}();
 
-        ExportJob::dispatch($exportModel, $parameters);
+        ExportJob::dispatch($exportModel, ...$parameters);
         \Alert::info(__('backpack-async-export::export.notifications.queued'))->flash();
 
         return response()->redirectToRoute(config('backpack-async-export.admin_route') . '.index');

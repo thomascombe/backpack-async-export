@@ -37,6 +37,7 @@ class ExportJob implements ShouldQueue
         try {
             ini_set('memory_limit', config('backpack-async-export.export_memory_limit'));
             $exportClass = $this->export->{Export::COLUMN_EXPORT_TYPE};
+
             Excel::store(
                 new $exportClass(...$this->exportParameters),
                 $this->export->{Export::COLUMN_FILENAME},

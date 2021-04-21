@@ -61,7 +61,7 @@ trait HasExportButton
      */
     protected function checkInterfaceImplementation(): void
     {
-        if (!$this instanceof ExportableCrud) {
+        if (! $this instanceof ExportableCrud) {
             throw new \Exception(sprintf('%s need to implement %s', self::class, ExportableCrud::class));
         }
     }

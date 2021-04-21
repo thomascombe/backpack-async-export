@@ -10,7 +10,6 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
 use Thomascombe\BackpackAsyncExport\Models\Export;
 
 /**
@@ -54,7 +53,7 @@ class ExportCrudController extends CrudController
 
     public function download(Export $export): StreamedResponse
     {
-        if (!$export->isReady) {
+        if (! $export->isReady) {
             abort(Response::HTTP_NOT_FOUND);
         }
 

@@ -47,9 +47,10 @@ class Export extends Model implements ExportInterface
         return $this->belongsTo(config('backpack-async-export.user_model'));
     }
 
-    protected static function booted()
+    protected static function boot()
     {
-        static::saving(function (Export $export) {
+        parent::boot();
+        Export::saving(function (Export $export) {
             if (empty($export->attributes[self::COLUMN_DISK])) {
                 $export->attributes[self::COLUMN_DISK] = config('backpack-async-export.disk', 'local');
             }

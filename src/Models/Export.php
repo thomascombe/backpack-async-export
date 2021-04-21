@@ -70,10 +70,11 @@ class Export extends Model implements ExportInterface
             );
 
             return '<a href="' . $url . '" class="btn btn-xs btn-default"> <span class="fa fa-download"></span>'
-                . ' Télécharger</a>';
+                . __('backpack-async-export::export.buttons.download') . ' </a>';
         }
 
         return '<button type="button" class="btn btn-xs btn-default" disabled="disabled">'
-            . '<span class="fa fa-download"></span> Télécharger</button>';
+            . '<span class="fa fa-download"></span> ' . __('backpack-async-export::export.buttons.download') .
+       '</button>';
     }
 }

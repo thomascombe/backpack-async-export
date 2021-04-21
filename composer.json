@@ -56,9 +56,7 @@
             "providers": [
                 "Thomascombe\\BackpackAsyncExport\\BackpackAsyncExportServiceProvider"
             ],
-            "aliases": {
-                "BackpackAsyncExport": "Thomascombe\\BackpackAsyncExport\\BackpackAsyncExportFacade"
-            }
+            "aliases": {}
         }
     },
     "minimum-stability": "dev",

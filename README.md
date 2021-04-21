@@ -35,8 +35,10 @@ This is the contents of the published config file:
 ```php
 return [
     'user_model' => 'App\Models\User',
+    'export_model' => \Thomascombe\BackpackAsyncExport\Models\Export::class,
     'admin_route' => 'export',
     'export_memory_limit' => '2048M',
+    'disk' => 'local',
 ];
 ```
 

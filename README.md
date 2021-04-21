@@ -2,9 +2,9 @@
 
 # Laravel Backpack Async Export
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/thomascombe/backpack_async_export.svg?style=flat-square)](https://packagist.org/packages/thomascombe/backpack_async_export)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/thomascombe/backpack-async-export.svg?style=flat-square)](https://packagist.org/packages/thomascombe/backpack-async-export)
 [![PHPCS check](https://github.com/thomascombe/backpack-async-export/actions/workflows/phpcs.yml/badge.svg)](https://github.com/thomascombe/backpack-async-export/actions/workflows/phpcs.yml)
-[![Total Downloads](https://img.shields.io/packagist/dt/thomascombe/backpack_async_export.svg?style=flat-square)](https://packagist.org/packages/thomascombe/backpack_async_export)
+[![Total Downloads](https://img.shields.io/packagist/dt/thomascombe/backpack-async-export.svg?style=flat-square)](https://packagist.org/packages/thomascombe/backpack-async-export)
 
 This is a package to manage async export in Backpack for Laravel
 

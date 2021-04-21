@@ -5,4 +5,5 @@ return [
     'export_model' => \Thomascombe\BackpackAsyncExport\Models\Export::class,
     'admin_route' => 'export',
     'export_memory_limit' => '2048M',
+    'disk' => 'local',
 ];

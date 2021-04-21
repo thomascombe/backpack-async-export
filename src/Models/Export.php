@@ -6,6 +6,8 @@ use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
 use Thomascombe\BackpackAsyncExport\Exports\ExportWithName;
 use Thomascombe\BackpackAsyncExport\Models\Interfaces\ExportInterface;
@@ -56,12 +58,13 @@ class Export extends Model implements ExportInterface
 
     public function getStoragePathAttribute(): string
     {
-        return storage_path('app/' . $this->{self::COLUMN_FILENAME});
+        return Storage::disk(config('backpack-async-export.disk', 'local'))
+            ->path($this->{self::COLUMN_FILENAME});
     }
 
     public function getDownloadButton(): string
     {
-        if (ExportStatus::Successful === $this->{self::COLUMN_STATUS}) {
+        if ($this->isReady) {
             $url = route(
                 config('backpack-async-export.admin_route') . '.download',
                 [
@@ -75,6 +78,12 @@ class Export extends Model implements ExportInterface
 
         return '<button type="button" class="btn btn-xs btn-default" disabled="disabled">'
             . '<span class="fa fa-download"></span> ' . __('backpack-async-export::export.buttons.download') .
-       '</button>';
+            '</button>';
+    }
+
+    public function getIsReadyAttribute(): bool
+    {
+        return ExportStatus::Successful === $this->{Export::COLUMN_STATUS}
+            && Storage::disk(config('backpack-async-export.disk'))->exists($this->{self::COLUMN_FILENAME});
     }
 }

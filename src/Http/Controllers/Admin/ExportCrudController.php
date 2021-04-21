@@ -54,7 +54,7 @@ class ExportCrudController extends CrudController
 
     public function download(Export $export): StreamedResponse
     {
-        if (ExportStatus::Successful !== $export->{Export::COLUMN_STATUS} || ! file_exists($export->storage_path)) {
+        if (!$export->isReady) {
             abort(Response::HTTP_NOT_FOUND);
         }
 

@@ -14,6 +14,7 @@ class CreateBackpackAsyncExportTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('export_type');
             $table->string('filename');
+            $table->string('disk');
             $table->string('status');
             $table->text('error')->nullable();
             $table->dateTime('completed_at')->nullable();

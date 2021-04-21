@@ -6,7 +6,6 @@ use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
 use Thomascombe\BackpackAsyncExport\Exports\ExportWithName;
@@ -20,6 +19,7 @@ class Export extends Model implements ExportInterface
     public const COLUMN_USER_ID = 'user_id';
     public const COLUMN_EXPORT_TYPE = 'export_type';
     public const COLUMN_FILENAME = 'filename';
+    public const COLUMN_DISK = 'disk';
     public const COLUMN_STATUS = 'status';
     public const COLUMN_ERROR = 'error';
     public const COLUMN_COMPLETED_AT = 'completed_at';
@@ -28,6 +28,7 @@ class Export extends Model implements ExportInterface
         self::COLUMN_USER_ID,
         self::COLUMN_EXPORT_TYPE,
         self::COLUMN_FILENAME,
+        self::COLUMN_DISK,
         self::COLUMN_STATUS,
         self::COLUMN_ERROR,
         self::COLUMN_COMPLETED_AT,
@@ -46,6 +47,15 @@ class Export extends Model implements ExportInterface
         return $this->belongsTo(config('backpack-async-export.user_model'));
     }
 
+    protected static function booted()
+    {
+        static::saving(function (Export $export) {
+            if (empty($export->attributes[self::COLUMN_DISK])) {
+                $export->attributes[self::COLUMN_DISK] = config('backpack-async-export.disk', 'local');
+            }
+        });
+    }
+
     public function getExportTypeNameAttribute(): string
     {
         $exportType = $this->{self::COLUMN_EXPORT_TYPE};
@@ -56,10 +66,14 @@ class Export extends Model implements ExportInterface
         return $exportType;
     }
 
+    public function getDiskAttribute(): string
+    {
+        return $this->attributes[self::COLUMN_DISK] ?? config('backpack-async-export.disk', 'local');
+    }
+
     public function getStoragePathAttribute(): string
     {
-        return Storage::disk(config('backpack-async-export.disk', 'local'))
-            ->path($this->{self::COLUMN_FILENAME});
+        return Storage::disk($this->disk)->path($this->{self::COLUMN_FILENAME});
     }
 
     public function getDownloadButton(): string
@@ -84,6 +98,6 @@ class Export extends Model implements ExportInterface
     public function getIsReadyAttribute(): bool
     {
         return ExportStatus::Successful === $this->{Export::COLUMN_STATUS}
-            && Storage::disk(config('backpack-async-export.disk'))->exists($this->{self::COLUMN_FILENAME});
+            && Storage::disk($this->disk)->exists($this->{self::COLUMN_FILENAME});
     }
 }

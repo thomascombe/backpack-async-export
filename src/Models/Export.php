@@ -73,6 +73,9 @@ class Export extends Model implements ExportInterface
 
     public function getStoragePathAttribute(): string
     {
+        /**
+         * @psalm-suppress UndefinedInterfaceMethod
+         */
         return Storage::disk($this->disk)->path($this->{self::COLUMN_FILENAME});
     }
 

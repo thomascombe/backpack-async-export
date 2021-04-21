@@ -100,6 +100,18 @@ public function getExportParameters(): array
 }
 ```
 
+## Need more?
+
+### Override Export model
+You can override `Export` model using config : `export_model`.  
+Your model class **need** to implement `\Thomascombe\BackpackAsyncExport\Models\Export`.  
+
+```php
+class Export extends \Thomascombe\BackpackAsyncExport\Models\Export
+{
+}
+```
+
 ## Testing
 
 ```bash

@@ -24,7 +24,7 @@ class ExportCrudController extends CrudController
 
     public function setup()
     {
-        CRUD::setModel(Export::class);
+        CRUD::setModel(config('backpack-async-export.export_model'));
         CRUD::setRoute(sprintf('%s/%s', config('backpack.base.route_prefix'), config('backpack-async-export.admin_route')));
         CRUD::setEntityNameStrings(
             __('backpack-async-export::export.name.singular'),

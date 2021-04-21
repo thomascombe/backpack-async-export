@@ -86,13 +86,17 @@ class Export extends Model implements ExportInterface
                 ]
             );
 
-            return '<a href="' . $url . '" class="btn btn-xs btn-default"> <span class="fa fa-download"></span>'
-                . __('backpack-async-export::export.buttons.download') . ' </a>';
+            return sprintf(
+                '<a href="%s" class="btn btn-xs btn-default"> <span class="fa fa-download"></span>%s</a>',
+                $url,
+                __('backpack-async-export::export.buttons.download')
+            );
         }
 
-        return '<button type="button" class="btn btn-xs btn-default" disabled="disabled">'
-            . '<span class="fa fa-download"></span> ' . __('backpack-async-export::export.buttons.download') .
-            '</button>';
+        return sprintf(
+            '<button type="button" class="btn btn-xs btn-default" disabled="disabled"><span class="fa fa-download"></span> %s</button>',
+            __('backpack-async-export::export.buttons.download')
+        );
     }
 
     public function getIsReadyAttribute(): bool

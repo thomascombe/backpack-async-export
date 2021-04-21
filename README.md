@@ -1,3 +1,5 @@
+<p align="center"><img src="/docs/images/banner.png" alt="Social Card of Laravel Backpack Async Export"></p>
+
 # Laravel Backpack Async Export
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/thomascombe/backpack_async_export.svg?style=flat-square)](https://packagist.org/packages/thomascombe/backpack_async_export)
@@ -5,6 +7,8 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/thomascombe/backpack_async_export.svg?style=flat-square)](https://packagist.org/packages/thomascombe/backpack_async_export)
 
 This is a package to manage async export in Backpack for Laravel
+
+<p align="center"><img src="/docs/images/demo.png" alt="Demo of Laravel Backpack Async Export"></p>
 
 ## Installation
 

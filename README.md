@@ -112,6 +112,27 @@ class Export extends \Thomascombe\BackpackAsyncExport\Models\Export
 }
 ```
 
+### Update export name
+Package allow to change export name with interface on your export class: `Thomascombe\BackpackAsyncExport\Exports\ExportWithName` 
+
+```php
+
+namespace App\Exports;
+
+use Thomascombe\BackpackAsyncExport\Exports\ExportWithName;
+
+class UserExport implements ExportWithName
+{
+    public static function getName(): string
+    {
+        return 'My export name';
+    }
+}
+```
+
+<p align="center"><img src="/docs/images/demo_name.png" style="max-width:500px" alt="Demo with custom name of Laravel Backpack Async Export"></p>
+
+
 ## Testing
 
 ```bash

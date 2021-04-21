@@ -134,6 +134,36 @@ class UserExport implements ExportWithName
 
 <p align="center"><img src="/docs/images/demo_name.png" style="max-width:500px" alt="Demo with custom name of Laravel Backpack Async Export"></p>
 
+### Multi export by CRUD?
+
+You can easily have multi export on save CRUD.  
+Your CRUD controller need to implement `Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Interfaces\MultiExportableCrud` interface.  
+
+```php
+public function getAvailableExports(): array
+{
+    return [
+        'default' => null,
+        'all' => 'All',
+    ];
+}
+```
+**Array keys**: key for query params and dynamic method name  
+**Array values**: Export name (display in CRUD button)  
+
+For each new export you have to add news methods: 
+```php
+public function getExport*All*(): Export
+{
+    return Export::create(...);
+}
+
+public function getExport*All*Parameters(): array
+{
+    return [...];
+}
+```
+
 
 ## Testing
 

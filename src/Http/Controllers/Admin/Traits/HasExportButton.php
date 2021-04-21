@@ -2,11 +2,19 @@
 
 namespace Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Traits;
 
+use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Route;
 use Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Interfaces\ExportableCrud;
 use Thomascombe\BackpackAsyncExport\Jobs\ExportJob;
 
+/**
+ * Trait HasExportButton
+ * @package Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Traits
+ *
+ * @mixin CrudController
+ * @mixin ExportableCrud
+ */
 trait HasExportButton
 {
     /**
@@ -26,8 +34,8 @@ trait HasExportButton
         $this->checkInterfaceImplementation();
 
         Route::get($segment . '/' . config('backpack-async-export.admin_route'), [
-            'as' => $routeName.'.export',
-            'uses' => $controller.'@export',
+            'as' => $routeName . '.export',
+            'uses' => $controller . '@export',
             'operation' => 'export',
         ]);
     }
@@ -39,7 +47,8 @@ trait HasExportButton
     {
         $this->checkInterfaceImplementation();
 
-        list($export, $parameters) = $this->getExport();
+        $export = $this->getExport();
+        $parameters = $this->getExportParameters();
 
         ExportJob::dispatch($export, $parameters);
         \Alert::info(__('backpack-async-export::export.notifications.queued'))->flash();

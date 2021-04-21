@@ -84,20 +84,19 @@ public function setup()
 use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
 use Thomascombe\BackpackAsyncExport\Models\Export;
 
-public function getExport(): array
+public function getExport(): Export
 {
-    $export = Export::create([
+    return Export::create([
         Export::COLUMN_USER_ID => backpack_user()->id,
         Export::COLUMN_STATUS => ExportStatus::Created,
         Export::COLUMN_FILENAME => sprintf('export/users_%s.xlsx', now()->toIso8601String()),
-        Export::COLUMN_EXPORT_TYPE => MyExportClass::class,
+        Export::COLUMN_EXPORT_TYPE => UserExport::class,
     ]);
-    return [
-        $export,
-        [
-            // Export class parameters
-        ],
-    ];
+}
+
+public function getExportParameters(): array
+{
+    return [];
 }
 ```
 

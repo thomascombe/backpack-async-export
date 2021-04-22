@@ -6,7 +6,7 @@
 [![PHPCS check](https://github.com/thomascombe/backpack-async-export/actions/workflows/phpcs.yml/badge.svg)](https://github.com/thomascombe/backpack-async-export/actions/workflows/phpcs.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/thomascombe/backpack-async-export.svg?style=flat-square)](https://packagist.org/packages/thomascombe/backpack-async-export)
 
-This is a package to manage async export in Backpack for Laravel
+This is a package to manage async export in [Backpack](https://backpackforlaravel.com/) for Laravel
 
 <p align="center"><img src="/docs/images/demo.png" alt="Demo of Laravel Backpack Async Export"></p>
 

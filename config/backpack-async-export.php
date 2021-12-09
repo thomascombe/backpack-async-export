@@ -2,6 +2,14 @@
 
 return [
     /**************
+     * GLOBAL
+     ***************
+     */
+    'feature_enabled' => [
+        'export' => true,
+        'import' => true,
+    ],
+    /**************
      * MODEL
      ***************
      */
@@ -11,7 +19,8 @@ return [
      * Routing
      ***************
      */
-    'admin_route' => 'export',
+    'admin_export_route' => 'export',
+    'admin_import_route' => 'import',
     /**************
      * Filesystem
      ***************

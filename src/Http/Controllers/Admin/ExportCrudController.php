@@ -10,6 +10,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Thomascombe\BackpackAsyncExport\Enums\ActionType;
 use Thomascombe\BackpackAsyncExport\Models\Export;
 
 /**
@@ -24,11 +25,12 @@ class ExportCrudController extends CrudController
     public function setup()
     {
         CRUD::setModel(config('backpack-async-export.export_model'));
-        CRUD::setRoute(sprintf('%s/%s', config('backpack.base.route_prefix'), config('backpack-async-export.admin_route')));
+        CRUD::setRoute(sprintf('%s/%s', config('backpack.base.route_prefix'), config('backpack-async-export.admin_export_route')));
         CRUD::setEntityNameStrings(
             __('backpack-async-export::export.name.singular'),
             __('backpack-async-export::export.name.plurial')
         );
+        $this->crud->query->where('action_type', ActionType::Export);
         $this->addCrudButtons();
     }
 

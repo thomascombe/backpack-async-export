@@ -4,5 +4,10 @@ Route::group([
     'prefix'     => config('backpack.base.route_prefix', 'admin'),
     'middleware' => ['web', backpack_middleware()],
 ], function () {
-    Route::crud(config('backpack-async-export.admin_route'), 'ExportCrudController');
+    if (config('backpack-async-export.feature_enabled.export')) {
+        Route::crud(config('backpack-async-export.admin_export_route'), 'ExportCrudController');
+    }
+    if (config('backpack-async-export.feature_enabled.import')) {
+        Route::crud(config('backpack-async-export.admin_import_route'), 'ImportCrudController');
+    }
 });

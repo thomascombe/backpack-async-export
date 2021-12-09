@@ -86,7 +86,7 @@ class Export extends Model implements ExportInterface
     {
         if ($this->isReady) {
             $url = route(
-                config('backpack-async-export.admin_route') . '.download',
+                config('backpack-async-export.admin_export_route') . '.download',
                 [
                     'export' => $this->id,
                 ]

@@ -17,6 +17,7 @@ class Export extends Model implements ExportInterface
     use SoftDeletes;
 
     public const COLUMN_USER_ID = 'user_id';
+    public const COLUMN_ACTION_TYPE = 'action_type';
     public const COLUMN_EXPORT_TYPE = 'export_type';
     public const COLUMN_FILENAME = 'filename';
     public const COLUMN_DISK = 'disk';
@@ -26,6 +27,7 @@ class Export extends Model implements ExportInterface
 
     protected $fillable = [
         self::COLUMN_USER_ID,
+        self::COLUMN_ACTION_TYPE,
         self::COLUMN_EXPORT_TYPE,
         self::COLUMN_FILENAME,
         self::COLUMN_DISK,

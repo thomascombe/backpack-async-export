@@ -12,6 +12,7 @@ class CreateBackpackAsyncExportTable extends Migration
             $table->bigIncrements('id');
 
             $table->unsignedBigInteger('user_id');
+            $table->string('action_type');
             $table->string('export_type');
             $table->string('filename');
             $table->string('disk');

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Thomascombe\BackpackAsyncExport\Enums\ActionType;
 use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
-use Thomascombe\BackpackAsyncExport\Models\Export;
+use Thomascombe\BackpackAsyncExport\Models\ImportExport;
 
 class ImportJob implements ShouldQueue
 {
@@ -21,10 +21,10 @@ class ImportJob implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    private Export $export;
+    private ImportExport $export;
     private array $exportParameters;
 
-    public function __construct(Export $export, ...$exportParameters)
+    public function __construct(ImportExport $export, ...$exportParameters)
     {
         $this->export = $export;
         $this->exportParameters = $exportParameters;
@@ -35,42 +35,42 @@ class ImportJob implements ShouldQueue
         if ($this->export->action_type !== ActionType::Import) {
             $message = sprintf('Import of type "%s" try to be import', $this->export->action_type);
             $this->export->update([
-                Export::COLUMN_STATUS => ExportStatus::Error,
-                Export::COLUMN_ERROR => $message,
+                ImportExport::COLUMN_STATUS => ExportStatus::Error,
+                ImportExport::COLUMN_ERROR => $message,
             ]);
             Log::error($message);
             return;
         }
 
         $this->export->update([
-            Export::COLUMN_STATUS => ExportStatus::Processing,
+            ImportExport::COLUMN_STATUS => ExportStatus::Processing,
         ]);
 
         try {
-            ini_set('memory_limit', config('backpack-async-export.export_memory_limit'));
-            $exportClass = $this->export->{Export::COLUMN_EXPORT_TYPE};
+            ini_set('memory_limit', config('backpack-async-import-export.export_memory_limit'));
+            $exportClass = $this->export->{ImportExport::COLUMN_EXPORT_TYPE};
 
             unset($this->exportParameters['private']);
             Excel::import(
                 new $exportClass(...$this->exportParameters),
-                $this->export->{Export::COLUMN_FILENAME},
-                config('backpack-async-export.disk')
+                $this->export->{ImportExport::COLUMN_FILENAME},
+                config('backpack-async-import-export.disk')
             );
 
-            $this->export->{Export::COLUMN_STATUS} = ExportStatus::Successful;
+            $this->export->{ImportExport::COLUMN_STATUS} = ExportStatus::Successful;
             $this->export->save();
             $this->export->update([
-                Export::COLUMN_STATUS => ExportStatus::Successful,
-                Export::COLUMN_COMPLETED_AT => now(),
+                ImportExport::COLUMN_STATUS => ExportStatus::Successful,
+                ImportExport::COLUMN_COMPLETED_AT => now(),
             ]);
         } catch (\Exception | \Throwable $exception) {
             $this->export->update([
-                Export::COLUMN_STATUS => ExportStatus::Error,
-                Export::COLUMN_ERROR => $exception->getMessage(),
+                ImportExport::COLUMN_STATUS => ExportStatus::Error,
+                ImportExport::COLUMN_ERROR => $exception->getMessage(),
             ]);
             Log::error(__('backpack-async-export::import.errors.global-export'), ['exception' => $exception]);
         } finally {
-            Storage::disk($this->export->{Export::COLUMN_DISK})->delete($this->export->{Export::COLUMN_FILENAME});
+            Storage::disk($this->export->{ImportExport::COLUMN_DISK})->delete($this->export->{ImportExport::COLUMN_FILENAME});
         }
     }
 }

@@ -9,9 +9,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
 use Thomascombe\BackpackAsyncExport\Exports\ExportWithName;
-use Thomascombe\BackpackAsyncExport\Models\Interfaces\ExportInterface;
+use Thomascombe\BackpackAsyncExport\Models\Interfaces\ImportExportInterface;
 
-class Export extends Model implements ExportInterface
+class
+ImportExport extends Model implements ImportExportInterface
 {
     use CrudTrait;
     use SoftDeletes;
@@ -46,15 +47,15 @@ class Export extends Model implements ExportInterface
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(config('backpack-async-export.user_model'));
+        return $this->belongsTo(config('backpack-async-import-export.user_model'));
     }
 
     protected static function boot()
     {
         parent::boot();
-        Export::saving(function (Export $export) {
+        ImportExport::saving(function (ImportExport $export) {
             if (empty($export->attributes[self::COLUMN_DISK])) {
-                $export->attributes[self::COLUMN_DISK] = config('backpack-async-export.disk', 'local');
+                $export->attributes[self::COLUMN_DISK] = config('backpack-async-import-export.disk', 'local');
             }
         });
     }
@@ -71,7 +72,7 @@ class Export extends Model implements ExportInterface
 
     public function getDiskAttribute(): string
     {
-        return $this->attributes[self::COLUMN_DISK] ?? config('backpack-async-export.disk', 'local');
+        return $this->attributes[self::COLUMN_DISK] ?? config('backpack-async-import-export.disk', 'local');
     }
 
     public function getStoragePathAttribute(): string
@@ -86,7 +87,7 @@ class Export extends Model implements ExportInterface
     {
         if ($this->isReady) {
             $url = route(
-                config('backpack-async-export.admin_export_route') . '.download',
+                config('backpack-async-import-export.admin_export_route') . '.download',
                 [
                     'export' => $this->id,
                 ]
@@ -107,7 +108,7 @@ class Export extends Model implements ExportInterface
 
     public function getIsReadyAttribute(): bool
     {
-        return ExportStatus::Successful === $this->{Export::COLUMN_STATUS}
+        return ExportStatus::Successful === $this->{ImportExport::COLUMN_STATUS}
             && Storage::disk($this->disk)->exists($this->{self::COLUMN_FILENAME});
     }
 }

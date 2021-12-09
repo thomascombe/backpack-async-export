@@ -45,7 +45,7 @@ trait HasExportButton
     {
         $this->checkInterfaceImplementation();
 
-        Route::get($segment . '/' . config('backpack-async-export.admin_export_route'), [
+        Route::get($segment . '/' . config('backpack-async-import-export.admin_export_route'), [
             'as' => $routeName . '.export',
             'uses' => $controller . '@export',
             'operation' => 'export',
@@ -71,7 +71,7 @@ trait HasExportButton
         ExportJob::dispatch($exportModel, ...$parameters);
         \Alert::info(__('backpack-async-export::export.notifications.queued'))->flash();
 
-        return response()->redirectToRoute(config('backpack-async-export.admin_export_route') . '.index');
+        return response()->redirectToRoute(config('backpack-async-import-export.admin_export_route') . '.index');
     }
 
     /**

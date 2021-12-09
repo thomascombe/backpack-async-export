@@ -14,7 +14,7 @@ return [
      ***************
      */
     'user_model' => 'App\Models\User',
-    'export_model' => \Thomascombe\BackpackAsyncExport\Models\Export::class,
+    'import_export_model' => \Thomascombe\BackpackAsyncExport\Models\ImportExport::class,
     /**************
      * Routing
      ***************

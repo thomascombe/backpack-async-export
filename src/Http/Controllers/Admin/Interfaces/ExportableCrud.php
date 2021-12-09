@@ -2,11 +2,11 @@
 
 namespace Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Interfaces;
 
-use Thomascombe\BackpackAsyncExport\Models\Export;
+use Thomascombe\BackpackAsyncExport\Models\ImportExport;
 
 interface ExportableCrud
 {
-    public function getExport(): Export;
+    public function getExport(): ImportExport;
 
     public function getExportParameters(): array;
 }

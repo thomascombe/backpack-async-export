@@ -13,7 +13,7 @@ use Prologue\Alerts\Facades\Alert;
 use Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Interfaces\ImportableCrud;
 use Thomascombe\BackpackAsyncExport\Http\Requests\ImportRequest;
 use Thomascombe\BackpackAsyncExport\Jobs\ImportJob;
-use Thomascombe\BackpackAsyncExport\Models\Export;
+use Thomascombe\BackpackAsyncExport\Models\ImportExport;
 
 /**
  * Trait HasImportButton
@@ -42,12 +42,12 @@ trait HasImportButton
     {
         $this->checkInterfaceImplementation();
 
-        Route::get($segment . '/' . config('backpack-async-export.admin_import_route'), [
+        Route::get($segment . '/' . config('backpack-async-import-export.admin_import_route'), [
             'as' => $routeName . '.import',
             'uses' => $controller . '@import',
             'operation' => 'import',
         ]);
-        Route::post($segment . '/' . config('backpack-async-export.admin_import_route'), [
+        Route::post($segment . '/' . config('backpack-async-import-export.admin_import_route'), [
             'as' => $routeName . '.import-submit',
             'uses' => $controller . '@importSubmit',
             'operation' => 'import-submit',
@@ -91,7 +91,7 @@ trait HasImportButton
     {
         $this->checkInterfaceImplementation();
 
-        /** @var Export $exportModel */
+        /** @var ImportExport $exportModel */
         $exportModel = $this->{$this->getImportMethodName()}();
         $parameters = $this->{$this->getImportParametersMethodName()}();
 
@@ -108,7 +108,7 @@ trait HasImportButton
         ImportJob::dispatch($exportModel, ...$parameters);
         \Alert::info(__('backpack-async-export::import.notifications.queued'))->flash();
 
-        return response()->redirectToRoute(config('backpack-async-export.admin_import_route') . '.index');
+        return response()->redirectToRoute(config('backpack-async-import-export.admin_import_route') . '.index');
     }
 
     private function checkFileMimetype(ImportRequest $request): array
@@ -157,17 +157,17 @@ trait HasImportButton
         return 'getImportParameters';
     }
 
-    private function saveUploadFile(ImportRequest $request, Export $exportModel): void
+    private function saveUploadFile(ImportRequest $request, ImportExport $exportModel): void
     {
         /** @var UploadedFile $file */
         $file = $request->files->get($request::PARAM_FILE);
-        $filename = sprintf('%s/%s', $exportModel->{Export::COLUMN_FILENAME}, $file->getClientOriginalName());
-        Storage::disk($exportModel->{Export::COLUMN_DISK})
+        $filename = sprintf('%s/%s', $exportModel->{ImportExport::COLUMN_FILENAME}, $file->getClientOriginalName());
+        Storage::disk($exportModel->{ImportExport::COLUMN_DISK})
             ->put(
                 $filename,
                 $file->getContent()
             );
-        $exportModel->{Export::COLUMN_FILENAME} = $filename;
+        $exportModel->{ImportExport::COLUMN_FILENAME} = $filename;
         $exportModel->save();
     }
 }

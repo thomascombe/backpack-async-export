@@ -6,7 +6,7 @@
 [![PHPCS check](https://github.com/thomascombe/backpack-async-export/actions/workflows/phpcs.yml/badge.svg)](https://github.com/thomascombe/backpack-async-export/actions/workflows/phpcs.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/thomascombe/backpack-async-export.svg?style=flat-square)](https://packagist.org/packages/thomascombe/backpack-async-export)
 
-This is a package to manage async export in [Backpack](https://backpackforlaravel.com/) for Laravel
+This is a package to manage async export and import in [Backpack](https://backpackforlaravel.com/) for Laravel
 
 <p align="center"><img src="/docs/images/demo.png" alt="Demo of Laravel Backpack Async Export"></p>
 
@@ -34,15 +34,20 @@ This is the contents of the published config file:
 
 ```php
 return [
+    'feature_enabled' => [
+        'export' => true,
+        'import' => true,
+    ],
     'user_model' => 'App\Models\User',
-    'export_model' => \Thomascombe\BackpackAsyncExport\Models\Export::class,
-    'admin_route' => 'export',
+    'import_export_model' => \Thomascombe\BackpackAsyncExport\Models\ImportExport::class,
+    'admin_export_route' => 'export',
+    'admin_import_route' => 'import',
     'export_memory_limit' => '2048M',
     'disk' => 'local',
 ];
 ```
 
-## Usage
+## Usage for export
 
 ### Add export item in menu
 ```bash
@@ -82,17 +87,18 @@ public function setup()
 ```
 
 ### Add method to your CRUD controller
+
 ```php
 use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
-use Thomascombe\BackpackAsyncExport\Models\Export;
+use Thomascombe\BackpackAsyncExport\Models\ImportExport;
 
-public function getExport(): Export
+public function getExport(): ImportExport
 {
-    return Export::create([
-        Export::COLUMN_USER_ID => backpack_user()->id,
-        Export::COLUMN_STATUS => ExportStatus::Created,
-        Export::COLUMN_FILENAME => sprintf('export/users_%s.xlsx', now()->toIso8601String()),
-        Export::COLUMN_EXPORT_TYPE => UserExport::class,
+    return ImportExport::create([
+        ImportExport::COLUMN_USER_ID => backpack_user()->id,
+        ImportExport::COLUMN_STATUS => ExportStatus::Created,
+        ImportExport::COLUMN_FILENAME => sprintf('export/users_%s.xlsx', now()->toIso8601String()),
+        ImportExport::COLUMN_EXPORT_TYPE => UserExport::class,
     ]);
 }
 
@@ -102,14 +108,80 @@ public function getExportParameters(): array
 }
 ```
 
-## Need more?
+## Usage for import
 
-### Override Export model
-You can override `Export` model using config : `export_model`.  
-Your model class **need** to implement `\Thomascombe\BackpackAsyncExport\Models\Export`.  
+### Add import item in menu
+```bash
+php artisan backpack:add-sidebar-content "<li class='nav-item'><a class='nav-link' href='{{ backpack_url('import') }}'><i class='nav-icon la la-file-import'></i> <span>Import</span></a></li>"
+```
+
+### Create you import class
+```bash
+php artisan make:import UserImport --model=App\Models\User
+```
+For all details, have a look at [Laravel Excel Package](https://laravel-excel.com/)
+
+### Create your controller
+```bash
+php artisan backpack:crud {Name}CrudController
+```
+
+### Your controller need to implement interface
+```php
+use Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Interfaces\ImportableCrud;
+
+class {Name}CrudController extends CrudController implements ImportableCrud {}
+```
+
+### Use awesome trait
+```php
+use Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Traits\HasImportButton;
+```
+
+### Call method to add buttons
+```php
+public function setup()
+{
+    // ...
+    $this->addImportButtons();
+}
+```
+
+### Add method to your CRUD controller
 
 ```php
-class Export extends \Thomascombe\BackpackAsyncExport\Models\Export
+use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
+use Thomascombe\BackpackAsyncExport\Models\ImportExport;
+
+public function getImport(): ImportExport
+{
+    return ImportExport::create([
+        ImportExport::COLUMN_USER_ID => backpack_user()->id,
+        ImportExport::COLUMN_STATUS => ExportStatus::Created,
+        ImportExport::COLUMN_FILENAME => sprintf('export/users_%s.xlsx', now()->toIso8601String()),
+        ImportExport::COLUMN_EXPORT_TYPE => UserExport::class,
+    ]);
+}
+
+public function getImportParameters(): array
+{
+    return [
+        'private' => [
+            'hint' => 'CSV file required',
+            'mimetypes' => ['text/csv', 'application/csv'],
+        ],
+    ];
+}
+```
+
+## Need more?
+
+### Override ImportExport model
+You can override `ImportExport` model using config : `import_export_model`.  
+Your model class **need** to implement `\Thomascombe\BackpackAsyncExport\Models\ImportExport`.
+
+```php
+class ImportExport extends \Thomascombe\BackpackAsyncExport\Models\ImportExport
 {
 }
 ```
@@ -153,9 +225,9 @@ public function getAvailableExports(): array
 
 For each new export you have to add news methods: 
 ```php
-public function getExport*All*(): Export
+public function getExport*All*(): ImportExport
 {
-    return Export::create(...);
+    return ImportExport::create(...);
 }
 
 public function getExport*All*Parameters(): array

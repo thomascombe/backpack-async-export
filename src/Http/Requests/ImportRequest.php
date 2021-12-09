@@ -3,6 +3,7 @@
 namespace Thomascombe\BackpackAsyncExport\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class ImportRequest extends FormRequest
 {
@@ -20,6 +21,6 @@ class ImportRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return backpack_auth()->check();
+        return Auth::guard(backpack_guard_name())->check();
     }
 }

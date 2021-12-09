@@ -7,7 +7,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
+use Prologue\Alerts\Facades\Alert;
 use Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Interfaces\ImportableCrud;
 use Thomascombe\BackpackAsyncExport\Http\Requests\ImportRequest;
 use Thomascombe\BackpackAsyncExport\Jobs\ImportJob;
@@ -22,7 +24,6 @@ use Thomascombe\BackpackAsyncExport\Models\Export;
  */
 trait HasImportButton
 {
-
     /**
      * @throws \Exception
      */
@@ -62,16 +63,21 @@ trait HasImportButton
 
         $this->data['crud'] = $this->crud;
         $this->data['title'] = $this->crud->getTitle();
+        $parameters = $this->{$this->getImportParametersMethodName()}();
+
         $this->data['fields'] = [
             [
                 'name' => 'file',
                 'label' => trans('backpack-async-export::admin.column.file'),
                 'type' => 'upload',
                 'upload' => true,
-                //                    'hint' => $hint,
-                //                    'attributes' => [
-                //                        'accept' => $accept,
-                //                    ],
+                'hint' => $parameters['private']['hint'] ?? null,
+                'attributes' => [
+                    'accept' => implode(
+                        ',',
+                        isset($parameters['private']) ? $parameters['private']['mimetypes'] : []
+                    ),
+                ],
             ]
         ];
 
@@ -89,20 +95,46 @@ trait HasImportButton
         $exportModel = $this->{$this->getImportMethodName()}();
         $parameters = $this->{$this->getImportParametersMethodName()}();
 
-        /** @var UploadedFile $file */
-        $file = $request->files->get($request::PARAM_FILE);
-        $filename = sprintf('%s/%s', $exportModel->{Export::COLUMN_FILENAME}, $file->getClientOriginalName());
-        Storage::disk($exportModel->{Export::COLUMN_DISK})
-            ->put(
-                $filename,
-                $file->getContent()
-            );
-        $exportModel->{Export::COLUMN_FILENAME} = $filename;
-        $exportModel->save();
+        list($mimetypeState, $validator) = $this->checkFileMimetype($request, $parameters);
+        if (!$mimetypeState) {
+            return redirect()
+                ->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $this->saveUploadFile($request, $exportModel);
+
         ImportJob::dispatch($exportModel, ...$parameters);
         \Alert::info(__('backpack-async-export::import.notifications.queued'))->flash();
 
         return response()->redirectToRoute(config('backpack-async-export.admin_import_route') . '.index');
+    }
+
+    private function checkFileMimetype(ImportRequest $request): array
+    {
+        $parameters = $this->{$this->getImportParametersMethodName()}();
+        $mimetypes = isset($parameters['private']) ? $parameters['private']['mimetypes'] : [];
+
+        if (!empty($mimetypes)) {
+            $validator = Validator::make($request->all(), [
+                $request::PARAM_FILE => [
+                    'required',
+                    'file',
+                    sprintf('mimetypes:%s', implode(',', $mimetypes)),
+                ],
+            ]);
+
+            if ($validator->fails()) {
+                Alert::error($validator->errors()->get('file'))->flash();
+
+                return [false, $validator];
+            }
+
+            return [true, $validator];
+        }
+
+        return [true];
     }
 
     /**
@@ -123,5 +155,19 @@ trait HasImportButton
     protected function getImportParametersMethodName(): string
     {
         return 'getImportParameters';
+    }
+
+    private function saveUploadFile(ImportRequest $request, Export $exportModel): void
+    {
+        /** @var UploadedFile $file */
+        $file = $request->files->get($request::PARAM_FILE);
+        $filename = sprintf('%s/%s', $exportModel->{Export::COLUMN_FILENAME}, $file->getClientOriginalName());
+        Storage::disk($exportModel->{Export::COLUMN_DISK})
+            ->put(
+                $filename,
+                $file->getContent()
+            );
+        $exportModel->{Export::COLUMN_FILENAME} = $filename;
+        $exportModel->save();
     }
 }

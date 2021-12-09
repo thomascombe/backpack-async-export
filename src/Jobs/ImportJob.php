@@ -8,6 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Thomascombe\BackpackAsyncExport\Enums\ActionType;
 use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
@@ -49,6 +50,7 @@ class ImportJob implements ShouldQueue
             ini_set('memory_limit', config('backpack-async-export.export_memory_limit'));
             $exportClass = $this->export->{Export::COLUMN_EXPORT_TYPE};
 
+            unset($this->exportParameters['private']);
             Excel::import(
                 new $exportClass(...$this->exportParameters),
                 $this->export->{Export::COLUMN_FILENAME},
@@ -67,6 +69,8 @@ class ImportJob implements ShouldQueue
                 Export::COLUMN_ERROR => $exception->getMessage(),
             ]);
             Log::error(__('backpack-async-export::import.errors.global-export'), ['exception' => $exception]);
+        } finally {
+            Storage::disk($this->export->{Export::COLUMN_DISK})->delete($this->export->{Export::COLUMN_FILENAME});
         }
     }
 }

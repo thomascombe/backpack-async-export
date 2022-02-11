@@ -19,8 +19,8 @@
     ],
     "require": {
         "php": "^7.4|^8.0",
-        "backpack/crud": "4.1.*",
-        "illuminate/contracts": "^6.0|^7.0|^8.0",
+        "backpack/crud": "4.1.*|~5.0",
+        "illuminate/contracts": "^6.0|^7.0|^8.0|^9.0",
         "maatwebsite/excel": "^3.1",
         "thomascombe/laravel-package-tools": "^1.7"
     },
@@ -49,7 +49,10 @@
         "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true
+        }
     },
     "extra": {
         "laravel": {

@@ -4,9 +4,9 @@ namespace Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Interfaces;
 
 use Thomascombe\BackpackAsyncExport\Models\ImportExport;
 
-interface ExportableCrud
+interface ImportableCrud
 {
-    public function getExport(): ImportExport;
+    public function getImport(): ImportExport;
 
-    public function getExportParameters(): array;
+    public function getImportParameters(): array;
 }

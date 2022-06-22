@@ -10,7 +10,8 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use Thomascombe\BackpackAsyncExport\Models\Export;
+use Thomascombe\BackpackAsyncExport\Enums\ActionType;
+use Thomascombe\BackpackAsyncExport\Models\ImportExport;
 
 /**
  * Class ExportCrudController
@@ -23,12 +24,13 @@ class ExportCrudController extends CrudController
 
     public function setup()
     {
-        CRUD::setModel(config('backpack-async-export.export_model'));
-        CRUD::setRoute(sprintf('%s/%s', config('backpack.base.route_prefix'), config('backpack-async-export.admin_route')));
+        CRUD::setModel(config('backpack-async-import-export.import_export_model'));
+        CRUD::setRoute(sprintf('%s/%s', config('backpack.base.route_prefix'), config('backpack-async-import-export.admin_export_route')));
         CRUD::setEntityNameStrings(
             __('backpack-async-export::export.name.singular'),
             __('backpack-async-export::export.name.plurial')
         );
+        $this->crud->query->where('action_type', ActionType::Export);
         $this->addCrudButtons();
     }
 
@@ -51,7 +53,7 @@ class ExportCrudController extends CrudController
         CRUD::column('completed_at')->label(__('backpack-async-export::export.columns.completed_at'));
     }
 
-    public function download(Export $export): StreamedResponse
+    public function download(ImportExport $export): StreamedResponse
     {
         if (! $export->isReady) {
             abort(Response::HTTP_NOT_FOUND);
@@ -59,7 +61,7 @@ class ExportCrudController extends CrudController
 
         $fileContent = file_get_contents($export->storagePath);
         $mimetype = File::mimeType($export->storagePath);
-        $fileNameExplode = explode('/', $export->{Export::COLUMN_FILENAME});
+        $fileNameExplode = explode('/', $export->{ImportExport::COLUMN_FILENAME});
 
         return response()->streamDownload(
             function () use ($fileContent): void {

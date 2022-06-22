@@ -8,11 +8,13 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+use Thomascombe\BackpackAsyncExport\Enums\ActionType;
 use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
 use Thomascombe\BackpackAsyncExport\Models\ImportExport;
 
-class ExportJob implements ShouldQueue
+class ImportJob implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -30,6 +32,16 @@ class ExportJob implements ShouldQueue
 
     public function handle()
     {
+        if ($this->export->action_type !== ActionType::Import) {
+            $message = sprintf('Import of type "%s" try to be import', $this->export->action_type);
+            $this->export->update([
+                ImportExport::COLUMN_STATUS => ExportStatus::Error,
+                ImportExport::COLUMN_ERROR => $message,
+            ]);
+            Log::error($message);
+            return;
+        }
+
         $this->export->update([
             ImportExport::COLUMN_STATUS => ExportStatus::Processing,
         ]);
@@ -38,7 +50,8 @@ class ExportJob implements ShouldQueue
             ini_set('memory_limit', config('backpack-async-import-export.export_memory_limit'));
             $exportClass = $this->export->{ImportExport::COLUMN_EXPORT_TYPE};
 
-            Excel::store(
+            unset($this->exportParameters['private']);
+            Excel::import(
                 new $exportClass(...$this->exportParameters),
                 $this->export->{ImportExport::COLUMN_FILENAME},
                 config('backpack-async-import-export.disk')
@@ -55,7 +68,9 @@ class ExportJob implements ShouldQueue
                 ImportExport::COLUMN_STATUS => ExportStatus::Error,
                 ImportExport::COLUMN_ERROR => $exception->getMessage(),
             ]);
-            Log::error(__('backpack-async-export::export.errors.global-export'), ['exception' => $exception]);
+            Log::error(__('backpack-async-export::import.errors.global-export'), ['exception' => $exception]);
+        } finally {
+            Storage::disk($this->export->{ImportExport::COLUMN_DISK})->delete($this->export->{ImportExport::COLUMN_FILENAME});
         }
     }
 }

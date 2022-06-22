@@ -4,14 +4,15 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBackpackAsyncExportTable extends Migration
+class CreateBackpackAsyncImportExportsTable extends Migration
 {
     public function up()
     {
-        Schema::create('exports', function (Blueprint $table) {
+        Schema::create('import_exports', function (Blueprint $table) {
             $table->bigIncrements('id');
 
             $table->unsignedBigInteger('user_id');
+            $table->string('action_type');
             $table->string('export_type');
             $table->string('filename');
             $table->string('disk');
@@ -22,7 +23,7 @@ class CreateBackpackAsyncExportTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('user_id', 'exports_ibfk_1')
+            $table->foreign('user_id', 'import_exports_ibfk_1')
                 ->references('id')
                 ->on('users');
         });

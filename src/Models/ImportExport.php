@@ -11,8 +11,7 @@ use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
 use Thomascombe\BackpackAsyncExport\Exports\ExportWithName;
 use Thomascombe\BackpackAsyncExport\Models\Interfaces\ImportExportInterface;
 
-class
-ImportExport extends Model implements ImportExportInterface
+class ImportExport extends Model implements ImportExportInterface
 {
     use CrudTrait;
     use SoftDeletes;

@@ -93,14 +93,14 @@ class ImportExport extends Model implements ImportExportInterface
             );
 
             return sprintf(
-                '<a href="%s" class="btn btn-xs btn-default"> <span class="fa fa-download"></span>%s</a>',
+                '<a href="%s" class="btn btn-sm btn-link"> <span class="la la-download"></span>%s</a>',
                 $url,
                 __('backpack-async-export::export.buttons.download')
             );
         }
 
         return sprintf(
-            '<button type="button" class="btn btn-xs btn-default" disabled="disabled"><span class="fa fa-download"></span> %s</button>',
+            '<button type="button" class="btn btn-sm btn-link" disabled="disabled"><span class="la la-download"></span> %s</button>',
             __('backpack-async-export::export.buttons.download')
         );
     }

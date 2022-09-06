@@ -31,8 +31,11 @@ trait HasImportButton
     {
         $this->checkInterfaceImplementation();
 
-        $this->crud->setting('import_route', url(route('user.import')));
-        $this->crud->addButton('top', 'export', 'view', 'backpack-async-export::buttons/import', 'end');
+        $this->crud->setting(
+            'import_route',
+            $this->crud->getRoute() . '/' . config('backpack-async-import-export.admin_import_route')
+        );
+        $this->crud->addButton('top', 'import', 'view', 'backpack-async-export::buttons/import', 'end');
     }
 
     /**

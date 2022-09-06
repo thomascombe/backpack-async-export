@@ -4,6 +4,7 @@ namespace Thomascombe\BackpackAsyncExport\Http\Controllers\Admin;
 
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
+use Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanel;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Illuminate\Http\Response;
@@ -21,11 +22,18 @@ use Thomascombe\BackpackAsyncExport\Models\ImportExport;
 class ExportCrudController extends CrudController
 {
     use ListOperation;
+    use ShowOperation;
 
     public function setup()
     {
         CRUD::setModel(config('backpack-async-import-export.import_export_model'));
-        CRUD::setRoute(sprintf('%s/%s', config('backpack.base.route_prefix'), config('backpack-async-import-export.admin_export_route')));
+        CRUD::setRoute(
+            sprintf(
+                '%s/%s',
+                config('backpack.base.route_prefix'),
+                config('backpack-async-import-export.admin_export_route')
+            )
+        );
         CRUD::setEntityNameStrings(
             __('backpack-async-export::export.name.singular'),
             __('backpack-async-export::export.name.plurial')
@@ -34,28 +42,14 @@ class ExportCrudController extends CrudController
         $this->addCrudButtons();
     }
 
-    protected function setupDownloadRoutes($segment, $routeName, $controller)
+    private function addCrudButtons(): void
     {
-        Route::get($segment . '/{export}/download', [
-            'as' => $routeName.'.download',
-            'uses' => $controller.'@download',
-            'operation' => 'download',
-        ]);
-    }
-
-    protected function setupListOperation()
-    {
-        CRUD::column('user_id')->label(__('backpack-async-export::export.columns.user_id'));
-        CRUD::column('export_type_name')->label(__('backpack-async-export::export.columns.export_type'));
-        CRUD::column('filename')->label(__('backpack-async-export::export.columns.filename'));
-        CRUD::column('status')->label(__('backpack-async-export::export.columns.status'));
-        CRUD::column('error')->label(__('backpack-async-export::export.columns.error'));
-        CRUD::column('completed_at')->label(__('backpack-async-export::export.columns.completed_at'));
+        $this->crud->addButtonFromModelFunction('line', 'download', 'getDownloadButton');
     }
 
     public function download(ImportExport $export): StreamedResponse
     {
-        if (! $export->isReady) {
+        if (!$export->isReady) {
             abort(Response::HTTP_NOT_FOUND);
         }
 
@@ -74,8 +68,29 @@ class ExportCrudController extends CrudController
         );
     }
 
-    private function addCrudButtons(): void
+    protected function setupDownloadRoutes($segment, $routeName, $controller)
     {
-        $this->crud->addButtonFromModelFunction('line', 'download', 'getDownloadButton');
+        Route::get($segment . '/{export}/download', [
+            'as' => $routeName . '.download',
+            'uses' => $controller . '@download',
+            'operation' => 'download',
+        ]);
+    }
+
+    protected function setupShowOperation(): void
+    {
+        $this->setupListOperation();
+
+        CRUD::column(ImportExport::COLUMN_ERROR)->limit(1000);
+    }
+
+    protected function setupListOperation()
+    {
+        CRUD::column('user_id')->label(__('backpack-async-export::export.columns.user_id'));
+        CRUD::column('export_type_name')->label(__('backpack-async-export::export.columns.export_type'));
+        CRUD::column('filename')->label(__('backpack-async-export::export.columns.filename'));
+        CRUD::column('status')->label(__('backpack-async-export::export.columns.status'));
+        CRUD::column('error')->label(__('backpack-async-export::export.columns.error'));
+        CRUD::column('completed_at')->label(__('backpack-async-export::export.columns.completed_at'));
     }
 }

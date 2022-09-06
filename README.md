@@ -56,7 +56,7 @@ php artisan backpack:add-sidebar-content "<li class='nav-item'><a class='nav-lin
 
 ### Create you export class
 ```bash
-php artisan make:export UserExport --model=App\Models\User
+php artisan make:export UserExport --model=App/Models/User
 ```
 For all details, have a look at [Laravel Excel Package](https://laravel-excel.com/)
 
@@ -117,7 +117,7 @@ php artisan backpack:add-sidebar-content "<li class='nav-item'><a class='nav-lin
 
 ### Create you import class
 ```bash
-php artisan make:import UserImport --model=App\Models\User
+php artisan make:import UserImport --model=App/Models/User
 ```
 For all details, have a look at [Laravel Excel Package](https://laravel-excel.com/)
 

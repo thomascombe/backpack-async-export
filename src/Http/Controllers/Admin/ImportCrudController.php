@@ -4,9 +4,11 @@ namespace Thomascombe\BackpackAsyncExport\Http\Controllers\Admin;
 
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
+use Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanel;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Thomascombe\BackpackAsyncExport\Enums\ActionType;
+use Thomascombe\BackpackAsyncExport\Models\ImportExport;
 
 /**
  * Class ImportCrudController
@@ -16,15 +18,18 @@ use Thomascombe\BackpackAsyncExport\Enums\ActionType;
 class ImportCrudController extends CrudController
 {
     use ListOperation;
+    use ShowOperation;
 
     public function setup()
     {
         CRUD::setModel(config('backpack-async-import-export.import_export_model'));
-        CRUD::setRoute(sprintf(
-            '%s/%s',
-            config('backpack.base.route_prefix'),
-            config('backpack-async-import-export.admin_import_route')
-        ));
+        CRUD::setRoute(
+            sprintf(
+                '%s/%s',
+                config('backpack.base.route_prefix'),
+                config('backpack-async-import-export.admin_import_route')
+            )
+        );
         CRUD::setEntityNameStrings(
             __('backpack-async-export::import.name.singular'),
             __('backpack-async-export::import.name.plurial')
@@ -32,7 +37,7 @@ class ImportCrudController extends CrudController
         $this->crud->query->where('action_type', ActionType::Import);
     }
 
-    protected function setupListOperation()
+    protected function setupListOperation(): void
     {
         CRUD::column('user_id')->label(__('backpack-async-export::import.columns.user_id'));
         CRUD::column('export_type_name')->label(__('backpack-async-export::import.columns.export_type'));
@@ -40,5 +45,12 @@ class ImportCrudController extends CrudController
         CRUD::column('status')->label(__('backpack-async-export::import.columns.status'));
         CRUD::column('error')->label(__('backpack-async-export::import.columns.error'));
         CRUD::column('completed_at')->label(__('backpack-async-export::import.columns.completed_at'));
+    }
+
+    protected function setupShowOperation(): void
+    {
+        $this->setupListOperation();
+
+        CRUD::column(ImportExport::COLUMN_ERROR)->limit(1000);
     }
 }

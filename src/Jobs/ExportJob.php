@@ -11,6 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
+use Thomascombe\BackpackAsyncExport\Exports\LaravelExcel;
 use Thomascombe\BackpackAsyncExport\Exports\SimpleCsv as SimpleCsvExport;
 use Thomascombe\BackpackAsyncExport\Jobs\Export\AfterSuccess;
 use Thomascombe\BackpackAsyncExport\Jobs\Export\SimpleCsv;
@@ -58,6 +59,10 @@ class ExportJob implements ShouldQueue
                     ->allOnQueue($queue);
 
                 return $this;
+            }
+
+            if ($instance instanceof LaravelExcel) {
+                $instance->setModel($this->export);
             }
 
             $result = Excel::store(

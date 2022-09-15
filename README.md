@@ -108,6 +108,52 @@ public function getExportParameters(): array
 }
 ```
 
+### Simple csv export
+
+It may sometimes be necessary to export large amounts of data. PhpSpreadsheet (used behind the hood by this package)
+does not always offer the best performance. In this case, it is recommended to use the low-level functions of PHP, such
+as [fputcsv](https://www.php.net/manual/function.fputcsv.php).
+
+This package has an abstract class `SimpleCsv` which can be extended to use this export mode. Of course, it is more
+limited and only allows you to define a query, headers and a mapping between the model and the data table to be
+exported.
+
+```php
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Thomascombe\BackpackAsyncExport\Exports\SimpleCsv;
+
+class UserExport extends SimpleCsv
+{
+    public function query(): EloquentBuilder
+    {
+        return User::query();
+    }
+
+    public function headings(): array
+    {
+        return [
+            'ID',
+            'Name',
+            'Email',
+        ];
+    }
+
+    /**
+     * @param User $user
+     * @return array
+     */
+    public function map($user): array
+    {
+        return [
+            $user->id,
+            $user->name,
+            $user->email,
+        ];
+    }
+}
+
+```
+
 ## Usage for import
 
 ### Add import item in menu

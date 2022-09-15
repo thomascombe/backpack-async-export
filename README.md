@@ -39,7 +39,7 @@ return [
         'import' => true,
     ],
     'user_model' => 'App\Models\User',
-    'import_export_model' => \Thomascombe\BackpackAsyncExport\Models\ImportExport::class,
+    'import_export_model' => Thomascombe\BackpackAsyncExport\Models\ImportExport::class,
     'admin_export_route' => 'export',
     'admin_import_route' => 'import',
     'export_memory_limit' => '2048M',
@@ -58,7 +58,9 @@ php artisan backpack:add-sidebar-content "<li class='nav-item'><a class='nav-lin
 ```bash
 php artisan make:export UserExport --model=App\Models\User
 ```
-For all details, have a look at [Laravel Excel Package](https://laravel-excel.com/)
+For all details, have a look at [Laravel Excel Package](https://laravel-excel.com/).
+
+You can make your export class extends our [LaravelExcel](./src/Exports/LaravelExcel.php) abstract.
 
 ### Create your controller
 ```bash
@@ -114,9 +116,9 @@ It may sometimes be necessary to export large amounts of data. PhpSpreadsheet (u
 does not always offer the best performance. In this case, it is recommended to use the low-level functions of PHP, such
 as [fputcsv](https://www.php.net/manual/function.fputcsv.php).
 
-This package has an abstract class `SimpleCsv` which can be extended to use this export mode. Of course, it is more
-limited and only allows you to define a query, headers and a mapping between the model and the data table to be
-exported.
+This package has an abstract class [SimpleCsv](./src/Exports/SimpleCsv.php) which can be extended to use this export
+mode. Of course, it is more limited and only allows you to define a query, headers and a mapping between the model and
+the data table to be exported.
 
 ```php
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;

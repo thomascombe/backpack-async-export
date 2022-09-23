@@ -51,8 +51,9 @@ class ImportJob implements ShouldQueue
             $exportClass = $this->export->{ImportExport::COLUMN_EXPORT_TYPE};
 
             unset($this->exportParameters['private']);
+            $importObject = new $exportClass(...$this->exportParameters);
             Excel::import(
-                new $exportClass(...$this->exportParameters),
+                $importObject,
                 $this->export->{ImportExport::COLUMN_FILENAME},
                 config('backpack-async-import-export.disk')
             );
@@ -63,6 +64,17 @@ class ImportJob implements ShouldQueue
                 ImportExport::COLUMN_STATUS => ExportStatus::Successful,
                 ImportExport::COLUMN_COMPLETED_AT => now(),
             ]);
+
+            if ($importObject->failures()->isNotEmpty()) {
+                $this->export->update([
+                    ImportExport::COLUMN_STATUS => ExportStatus::Error,
+                    ImportExport::COLUMN_ERROR => $importObject
+                        ->failures()
+                        ->map(fn ($item, $key) => $item->errors())
+                        ->flatten()
+                        ->implode(', '),
+                ]);
+            }
         } catch (\Exception | \Throwable $exception) {
             $this->export->update([
                 ImportExport::COLUMN_STATUS => ExportStatus::Error,

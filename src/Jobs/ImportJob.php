@@ -66,14 +66,12 @@ class ImportJob implements ShouldQueue
             ]);
 
             if ($importObject->failures()->isNotEmpty()) {
-                $this->export->update([
-                    ImportExport::COLUMN_STATUS => ExportStatus::Error,
-                    ImportExport::COLUMN_ERROR => $importObject
-                        ->failures()
-                        ->map(fn ($item, $key) => $item->errors())
-                        ->flatten()
-                        ->implode(', '),
-                ]);
+                $message = $importObject
+                    ->failures()
+                    ->map(fn ($item, $key) => $item->errors())
+                    ->flatten()
+                    ->implode(', ');
+                throw new \Exception($message);
             }
         } catch (\Exception | \Throwable $exception) {
             $this->export->update([

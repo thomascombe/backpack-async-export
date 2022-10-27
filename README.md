@@ -56,7 +56,7 @@ php artisan backpack:add-sidebar-content "<li class='nav-item'><a class='nav-lin
 
 ### Create you export class
 ```bash
-php artisan make:export UserExport --model=App\Models\User
+php artisan make:export UserExport --model=App/Models/User
 ```
 For all details, have a look at [Laravel Excel Package](https://laravel-excel.com/).
 
@@ -91,6 +91,7 @@ public function setup()
 ### Add method to your CRUD controller
 
 ```php
+use Thomascombe\BackpackAsyncExport\Enums\ActionType;
 use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
 use Thomascombe\BackpackAsyncExport\Models\ImportExport;
 
@@ -98,6 +99,7 @@ public function getExport(): ImportExport
 {
     return ImportExport::create([
         ImportExport::COLUMN_USER_ID => backpack_user()->id,
+        ImportExport::COLUMN_ACTION_TYPE => ActionType::Export,
         ImportExport::COLUMN_STATUS => ExportStatus::Created,
         ImportExport::COLUMN_FILENAME => sprintf('export/users_%s.xlsx', now()->toIso8601String()),
         ImportExport::COLUMN_EXPORT_TYPE => UserExport::class,
@@ -165,7 +167,7 @@ php artisan backpack:add-sidebar-content "<li class='nav-item'><a class='nav-lin
 
 ### Create you import class
 ```bash
-php artisan make:import UserImport --model=App\Models\User
+php artisan make:import UserImport --model=App/Models/User
 ```
 For all details, have a look at [Laravel Excel Package](https://laravel-excel.com/)
 
@@ -198,6 +200,7 @@ public function setup()
 ### Add method to your CRUD controller
 
 ```php
+use Thomascombe\BackpackAsyncExport\Enums\ActionType;
 use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
 use Thomascombe\BackpackAsyncExport\Models\ImportExport;
 
@@ -205,9 +208,10 @@ public function getImport(): ImportExport
 {
     return ImportExport::create([
         ImportExport::COLUMN_USER_ID => backpack_user()->id,
+        ImportExport::COLUMN_ACTION_TYPE => ActionType::Import,
         ImportExport::COLUMN_STATUS => ExportStatus::Created,
-        ImportExport::COLUMN_FILENAME => sprintf('export/users_%s.xlsx', now()->toIso8601String()),
-        ImportExport::COLUMN_EXPORT_TYPE => UserExport::class,
+        ImportExport::COLUMN_FILENAME => '',
+        ImportExport::COLUMN_EXPORT_TYPE => UserImport::class,
     ]);
 }
 

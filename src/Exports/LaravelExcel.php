@@ -32,7 +32,7 @@ abstract class LaravelExcel
         );
     }
 
-    public function getModel(): ImportExport
+    public function getModel(): ?ImportExport
     {
         return $this->model;
     }

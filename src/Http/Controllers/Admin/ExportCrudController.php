@@ -81,6 +81,9 @@ class ExportCrudController extends CrudController
     {
         $this->setupListOperation();
 
+        /**
+         * @psalm-suppress UndefinedInterfaceMethod
+         */
         CRUD::column(ImportExport::COLUMN_ERROR)->limit(1000);
     }
 

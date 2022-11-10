@@ -25,7 +25,7 @@ class SimpleCsv implements ShouldQueue
     protected ImportExport $model;
 
     /**
-     * @var bool|resource
+     * @var bool|resource|closed-resource
      */
     protected $handle;
 
@@ -84,6 +84,9 @@ class SimpleCsv implements ShouldQueue
      */
     protected function openFile(): self
     {
+        /**
+         * @psalm-suppress UndefinedInterfaceMethod
+         */
         $this->handle = fopen(
             Storage::disk($this->model->disk)->path($this->model->filename),
             'w'

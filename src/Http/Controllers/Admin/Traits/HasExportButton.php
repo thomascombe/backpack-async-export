@@ -26,7 +26,7 @@ trait HasExportButton
      */
     protected function addExportButtons()
     {
-        $this->checkInterfaceImplementation();
+        $this->checkExportInterfaceImplementation();
 
         $exports = [MultiExportableCrud::DEFAULT_EXPORT_NAME => null];
         if ($this instanceof MultiExportableCrud) {
@@ -43,7 +43,7 @@ trait HasExportButton
      */
     protected function setupExportRoutes($segment, $routeName, $controller)
     {
-        $this->checkInterfaceImplementation();
+        $this->checkExportInterfaceImplementation();
 
         Route::get($segment . '/' . config('backpack-async-import-export.admin_export_route'), [
             'as' => $routeName . '.export',
@@ -57,7 +57,7 @@ trait HasExportButton
      */
     public function export(): RedirectResponse
     {
-        $this->checkInterfaceImplementation();
+        $this->checkExportInterfaceImplementation();
 
         $export = request()->query(MultiExportableCrud::QUERY_PARAM, MultiExportableCrud::DEFAULT_EXPORT_NAME);
         abort_if(
@@ -77,7 +77,7 @@ trait HasExportButton
     /**
      * @throws \Exception
      */
-    protected function checkInterfaceImplementation(): void
+    protected function checkExportInterfaceImplementation(): void
     {
         if (!$this instanceof ExportableCrud) {
             throw new \Exception(sprintf('%s need to implement %s', self::class, ExportableCrud::class));

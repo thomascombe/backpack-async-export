@@ -29,10 +29,13 @@ trait HasImportButton
      */
     protected function addImportButtons()
     {
-        $this->checkInterfaceImplementation();
+        $this->checkImportInterfaceImplementation();
 
-        $this->crud->setting('import_route', url(route('user.import')));
-        $this->crud->addButton('top', 'export', 'view', 'backpack-async-export::buttons/import', 'end');
+        $this->crud->setting(
+            'import_route',
+            $this->crud->getRoute() . '/' . config('backpack-async-import-export.admin_import_route')
+        );
+        $this->crud->addButton('top', 'import', 'view', 'backpack-async-export::buttons/import', 'end');
     }
 
     /**
@@ -40,7 +43,7 @@ trait HasImportButton
      */
     protected function setupImportRoutes($segment, $routeName, $controller)
     {
-        $this->checkInterfaceImplementation();
+        $this->checkImportInterfaceImplementation();
 
         Route::get($segment . '/' . config('backpack-async-import-export.admin_import_route'), [
             'as' => $routeName . '.import',
@@ -59,7 +62,7 @@ trait HasImportButton
      */
     public function import(): View
     {
-        $this->checkInterfaceImplementation();
+        $this->checkImportInterfaceImplementation();
 
         $this->data['crud'] = $this->crud;
         $this->data['title'] = $this->crud->getTitle();
@@ -89,7 +92,7 @@ trait HasImportButton
      */
     public function importSubmit(ImportRequest $request): RedirectResponse
     {
-        $this->checkInterfaceImplementation();
+        $this->checkImportInterfaceImplementation();
 
         /** @var ImportExport $exportModel */
         $exportModel = $this->{$this->getImportMethodName()}();
@@ -140,7 +143,7 @@ trait HasImportButton
     /**
      * @throws \Exception
      */
-    protected function checkInterfaceImplementation(): void
+    protected function checkImportInterfaceImplementation(): void
     {
         if (!$this instanceof ImportableCrud) {
             throw new \Exception(sprintf('%s need to implement %s', self::class, ImportableCrud::class));

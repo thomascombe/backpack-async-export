@@ -65,22 +65,24 @@ class ImportJob implements ShouldQueue
                 ImportExport::COLUMN_COMPLETED_AT => now(),
             ]);
 
-            if ($importObject->failures()->isNotEmpty()) {
+            if (method_exists($importObject, 'failures') && $importObject->failures()->isNotEmpty()) {
                 $message = $importObject
                     ->failures()
-                    ->map(fn ($item, $key) => $item->errors())
+                    ->map(fn($item, $key) => $item->errors())
                     ->flatten()
                     ->implode(', ');
                 throw new \Exception($message);
             }
-        } catch (\Exception | \Throwable $exception) {
+        } catch (\Exception|\Throwable $exception) {
             $this->export->update([
                 ImportExport::COLUMN_STATUS => ExportStatus::Error,
                 ImportExport::COLUMN_ERROR => $exception->getMessage(),
             ]);
             Log::error(__('backpack-async-export::import.errors.global-export'), ['exception' => $exception]);
         } finally {
-            Storage::disk($this->export->{ImportExport::COLUMN_DISK})->delete($this->export->{ImportExport::COLUMN_FILENAME});
+            Storage::disk($this->export->{ImportExport::COLUMN_DISK})->delete(
+                $this->export->{ImportExport::COLUMN_FILENAME}
+            );
         }
     }
 }

@@ -45,6 +45,7 @@ class SimpleCsv implements ShouldQueue
     {
         try {
             $this->openFile();
+            $this->addUtf8Header();
 
             fputcsv($this->handle, $this->export->headings());
 
@@ -100,5 +101,13 @@ class SimpleCsv implements ShouldQueue
         );
 
         return $this;
+    }
+
+    /**
+     * @return void
+     */
+    public function addUtf8Header(): void
+    {
+        fprintf($this->handle, sprintf("%s%s%s", chr(0xEF), chr(0xBB), chr(0xBF)));
     }
 }

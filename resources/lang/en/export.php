@@ -19,6 +19,7 @@ return [
     ],
     'notifications' => [
         'queued' => 'Export launched! Results will be available when ready on "Export" tab',
+        'sync' => 'Import launched in sync! Results is available on "Import" tab',
     ],
     'errors' => [
         'global-export' => 'Error during export',

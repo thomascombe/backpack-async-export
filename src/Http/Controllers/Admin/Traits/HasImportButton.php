@@ -109,7 +109,11 @@ trait HasImportButton
         $this->saveUploadFile($request, $exportModel);
 
         ImportJob::dispatch($exportModel, ...$parameters);
-        Alert::info(__('backpack-async-export::import.notifications.queued'))->flash();
+        if (config('queue.default') !== 'sync') {
+            Alert::info(__('backpack-async-export::import.notifications.queued'))->flash();
+        } else {
+            Alert::warning(__('backpack-async-export::import.notifications.sync'))->flash();
+        }
 
         return response()->redirectToRoute(config('backpack-async-import-export.admin_import_route') . '.index');
     }

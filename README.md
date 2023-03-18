@@ -64,7 +64,7 @@ You can make your export class extends our [LaravelExcel](./src/Exports/LaravelE
 
 ### Create your controller
 ```bash
-php artisan backpack:crud {Name}CrudController
+php artisan backpack:crud {ModelName}
 ```
 
 ### Your controller need to implement interface
@@ -92,7 +92,7 @@ public function setup()
 
 ```php
 use Thomascombe\BackpackAsyncExport\Enums\ActionType;
-use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
+use Thomascombe\BackpackAsyncExport\Enums\ImportExportStatus;
 use Thomascombe\BackpackAsyncExport\Models\ImportExport;
 
 public function getExport(): ImportExport
@@ -100,7 +100,7 @@ public function getExport(): ImportExport
     return ImportExport::create([
         ImportExport::COLUMN_USER_ID => backpack_user()->id,
         ImportExport::COLUMN_ACTION_TYPE => ActionType::Export,
-        ImportExport::COLUMN_STATUS => ExportStatus::Created,
+        ImportExport::COLUMN_STATUS => ImportExportStatus::Created,
         ImportExport::COLUMN_FILENAME => sprintf('export/users_%s.xlsx', now()->toIso8601String()),
         ImportExport::COLUMN_EXPORT_TYPE => UserExport::class,
     ]);
@@ -201,15 +201,15 @@ public function setup()
 
 ```php
 use Thomascombe\BackpackAsyncExport\Enums\ActionType;
-use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
+use Thomascombe\BackpackAsyncExport\Enums\ImportExportStatus;
 use Thomascombe\BackpackAsyncExport\Models\ImportExport;
 
 public function getImport(): ImportExport
 {
     return ImportExport::create([
         ImportExport::COLUMN_USER_ID => backpack_user()->id,
-        ImportExport::COLUMN_ACTION_TYPE => ActionType::Import,
-        ImportExport::COLUMN_STATUS => ExportStatus::Created,
+        ImportExport::COLUMN_ACTION_TYPE => ActionType::Import->value,
+        ImportExport::COLUMN_STATUS => ImportExportStatus::Created,
         ImportExport::COLUMN_FILENAME => '',
         ImportExport::COLUMN_EXPORT_TYPE => UserImport::class,
     ]);

@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
-use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
+use Thomascombe\BackpackAsyncExport\Enums\ActionType;
+use Thomascombe\BackpackAsyncExport\Enums\ImportExportStatus;
 use Thomascombe\BackpackAsyncExport\Exports\ExportWithName;
 use Thomascombe\BackpackAsyncExport\Models\Interfaces\ImportExportInterface;
 
@@ -38,6 +39,9 @@ class ImportExport extends Model implements ImportExportInterface
 
     protected $casts = [
         self::COLUMN_USER_ID => 'int',
+        self::COLUMN_COMPLETED_AT => 'datetime',
+        self::COLUMN_ACTION_TYPE => ActionType::class,
+        self::COLUMN_STATUS => ImportExportStatus::class,
     ];
 
     protected $dates = [
@@ -100,14 +104,15 @@ class ImportExport extends Model implements ImportExportInterface
         }
 
         return sprintf(
-            '<button type="button" class="btn btn-sm btn-link" disabled="disabled"><span class="la la-download"></span> %s</button>',
+            '<button type="button" class="btn btn-sm btn-link" disabled="disabled">'
+            . '<span class="la la-download"></span> %s</button>',
             __('backpack-async-export::export.buttons.download')
         );
     }
 
     public function getIsReadyAttribute(): bool
     {
-        return ExportStatus::Successful === $this->{ImportExport::COLUMN_STATUS}
+        return ImportExportStatus::Successful === $this->{ImportExport::COLUMN_STATUS}
             && Storage::disk($this->disk)->exists($this->{self::COLUMN_FILENAME});
     }
 }

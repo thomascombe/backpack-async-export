@@ -3,10 +3,12 @@
 namespace Thomascombe\BackpackAsyncExport\Models;
 
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Thomascombe\BackpackAsyncExport\Enums\ActionType;
 use Thomascombe\BackpackAsyncExport\Enums\ImportExportStatus;
 use Thomascombe\BackpackAsyncExport\Exports\ExportWithName;
@@ -70,7 +72,7 @@ class ImportExport extends Model implements ImportExportInterface
             return $exportType::getName();
         }
 
-        return $exportType;
+        return Str::afterLast($exportType, '\\');
     }
 
     public function getDiskAttribute(): string
@@ -110,9 +112,11 @@ class ImportExport extends Model implements ImportExportInterface
         );
     }
 
-    public function getIsReadyAttribute(): bool
+    protected function isReady(): Attribute
     {
-        return ImportExportStatus::Successful === $this->{ImportExport::COLUMN_STATUS}
-            && Storage::disk($this->disk)->exists($this->{self::COLUMN_FILENAME});
+        return Attribute::make(
+            get: fn () => ImportExportStatus::Successful === $this->{ImportExport::COLUMN_STATUS}
+                && Storage::disk($this->disk)->exists($this->{self::COLUMN_FILENAME}),
+        );
     }
 }

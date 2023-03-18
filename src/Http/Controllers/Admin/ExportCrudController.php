@@ -90,7 +90,7 @@ class ExportCrudController extends CrudController
     protected function setupListOperation()
     {
         CRUD::column('user_id')->label(__('backpack-async-export::export.columns.user_id'));
-        CRUD::column('export_type_name')->type('enum')->label(__('backpack-async-export::export.columns.export_type'));
+        CRUD::column('export_type_name')->label(__('backpack-async-export::export.columns.export_type'));
         CRUD::column('filename')->label(__('backpack-async-export::export.columns.filename'));
         CRUD::column('status')->type('enum')->label(__('backpack-async-export::export.columns.status'));
         CRUD::column('error')->label(__('backpack-async-export::export.columns.error'));

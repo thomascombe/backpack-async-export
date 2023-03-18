@@ -12,10 +12,7 @@ abstract class LaravelExcel
 {
     use Exportable;
 
-    /**
-     * @var ImportExport
-     */
-    protected $model;
+    protected ImportExport $model;
 
     public function failed(Throwable $exception): void
     {

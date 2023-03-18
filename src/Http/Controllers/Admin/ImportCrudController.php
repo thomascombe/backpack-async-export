@@ -40,7 +40,7 @@ class ImportCrudController extends CrudController
     protected function setupListOperation(): void
     {
         CRUD::column('user_id')->label(__('backpack-async-export::import.columns.user_id'));
-        CRUD::column('export_type_name')->type('enum')->label(__('backpack-async-export::import.columns.export_type'));
+        CRUD::column('export_type_name')->label(__('backpack-async-export::import.columns.export_type'));
         CRUD::column('filename')->label(__('backpack-async-export::import.columns.filename'));
         CRUD::column('status')->type('enum')->label(__('backpack-async-export::import.columns.status'));
         CRUD::column('error')->label(__('backpack-async-export::import.columns.error'));
@@ -51,9 +51,6 @@ class ImportCrudController extends CrudController
     {
         $this->setupListOperation();
 
-        /**
-         * @psalm-suppress UndefinedMagicMethod
-         */
-        CRUD::column(ImportExport::COLUMN_ERROR)->limit(1000);
+        CRUD::column(ImportExport::COLUMN_ERROR)->limit(1000); /* @psalm-suppress UndefinedMagicMethod */
     }
 }

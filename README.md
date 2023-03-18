@@ -9,6 +9,7 @@
 This is a package to manage async export and import in [Backpack](https://backpackforlaravel.com/) for Laravel
 
 <p align="center"><img src="/docs/images/demo.png" alt="Demo of Laravel Backpack Async Export"></p>
+<p align="center"><img src="/docs/images/demo_ended.png" alt="Demo of Laravel Backpack Async Export"></p>
 
 ## Installation
 

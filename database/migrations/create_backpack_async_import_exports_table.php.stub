@@ -31,6 +31,6 @@ class CreateBackpackAsyncImportExportsTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('exports');
+        Schema::dropIfExists('import_exports');
     }
 }

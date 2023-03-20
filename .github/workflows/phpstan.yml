@@ -8,10 +8,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: php-actions/composer@v6
-        with:
-          dev: no
-          args: --ignore-platform-reqs
-      - uses: php-actions/phpstan@v3
-        with:
-          path: src/
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
+      - name: PHPStan
+        uses: chindit/actions-phpstan@master

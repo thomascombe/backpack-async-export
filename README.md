@@ -19,6 +19,11 @@ You can install the package via composer:
 composer require thomascombe/backpack-async-export
 ```
 
+| Version | PHP        | Laravel             | Backpack     |
+|---------|------------|---------------------|--------------|
+| 1.x     | 7.4 - ^8.0 | ^8.0 - ^9.0 - ^10.0 | 4.1.* - ~5.0 |
+| 2.x     | ^8.1       | ^9.0 - ^10.0        | ~5.5         |
+
 You can publish and run the migrations with:
 
 ```bash

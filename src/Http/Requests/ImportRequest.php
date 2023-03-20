@@ -20,9 +20,6 @@ class ImportRequest extends FormRequest
 
     public function authorize(): bool
     {
-        /**
-         * @psalm-suppress UndefinedFunction
-         */
-        return \backpack_auth()->check();
+        return backpack_auth()->check();
     }
 }

@@ -20,7 +20,7 @@ class ImportCrudController extends CrudController
     use ListOperation;
     use ShowOperation;
 
-    public function setup()
+    public function setup(): void
     {
         CRUD::setModel(config('backpack-async-import-export.import_export_model'));
         CRUD::setRoute(
@@ -51,6 +51,6 @@ class ImportCrudController extends CrudController
     {
         $this->setupListOperation();
 
-        CRUD::column(ImportExport::COLUMN_ERROR)->limit(1000); /* @psalm-suppress UndefinedMagicMethod */
+        CRUD::column(ImportExport::COLUMN_ERROR)->limit(1000); // @phpstan-ignore-line
     }
 }

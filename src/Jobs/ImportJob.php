@@ -22,18 +22,18 @@ class ImportJob implements ShouldQueue
     use SerializesModels;
 
     private ImportExport $export;
-    private array $exportParameters;
+    readonly private array $exportParameters;
 
-    public function __construct(ImportExport $export, ...$exportParameters)
+    public function __construct(ImportExport $export, array ...$exportParameters)
     {
         $this->export = $export;
         $this->exportParameters = $exportParameters;
     }
 
-    public function handle()
+    public function handle(): void
     {
-        if ($this->export->action_type !== ActionType::Import->value) {
-            $message = sprintf('Import of type "%s" try to be import', $this->export->action_type);
+        if ($this->export->action_type !== ActionType::Import) {
+            $message = sprintf('Import of type "%s" try to be import', $this->export->action_type->value);
             $this->export->update([
                 ImportExport::COLUMN_STATUS => ImportExportStatus::Error,
                 ImportExport::COLUMN_ERROR => $message,

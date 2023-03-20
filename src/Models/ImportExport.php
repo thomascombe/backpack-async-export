@@ -3,6 +3,7 @@
 namespace Thomascombe\BackpackAsyncExport\Models;
 
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,6 +15,18 @@ use Thomascombe\BackpackAsyncExport\Enums\ImportExportStatus;
 use Thomascombe\BackpackAsyncExport\Exports\ExportWithName;
 use Thomascombe\BackpackAsyncExport\Models\Interfaces\ImportExportInterface;
 
+/**
+ * @property integer $user_id
+ * @property ActionType $action_type
+ * @property string $export_type
+ * @property string $filename
+ * @property string $disk
+ * @property ImportExportStatus $status
+ * @property string $error
+ * @property Carbon $completed_at
+ *
+ * @property boolean $isReady
+ */
 class ImportExport extends Model implements ImportExportInterface
 {
     use CrudTrait;
@@ -46,7 +59,7 @@ class ImportExport extends Model implements ImportExportInterface
         self::COLUMN_STATUS => ImportExportStatus::class,
     ];
 
-    protected $dates = [
+    protected array $dates = [
         self::COLUMN_COMPLETED_AT,
     ];
 

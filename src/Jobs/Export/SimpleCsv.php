@@ -25,7 +25,7 @@ class SimpleCsv implements ShouldQueue
     protected ImportExport $model;
 
     /**
-     * @var bool|resource|closed-resource
+     * @var bool|resource
      */
     protected $handle;
 

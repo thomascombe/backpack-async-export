@@ -28,13 +28,13 @@ class ExportJob implements ShouldQueue
     private ImportExport $export;
     private array $exportParameters;
 
-    public function __construct(ImportExport $export, ...$exportParameters)
+    public function __construct(ImportExport $export, array ...$exportParameters)
     {
         $this->export = $export;
         $this->exportParameters = $exportParameters;
     }
 
-    public function handle()
+    public function handle(): self
     {
         $this->export->update([
             ImportExport::COLUMN_STATUS => ImportExportStatus::Processing,
@@ -71,6 +71,7 @@ class ExportJob implements ShouldQueue
                 config('backpack-async-import-export.disk')
             );
 
+            /** @phpstan-ignore-next-line  */
             if ($result instanceof PendingDispatch) {
                 $result->chain($chain);
             } else {
@@ -86,5 +87,7 @@ class ExportJob implements ShouldQueue
             ]);
             Log::error(__('backpack-async-export::export.errors.global-export'), ['exception' => $exception]);
         }
+
+        return $this;
     }
 }

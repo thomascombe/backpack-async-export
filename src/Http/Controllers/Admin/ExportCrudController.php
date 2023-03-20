@@ -24,7 +24,7 @@ class ExportCrudController extends CrudController
     use ListOperation;
     use ShowOperation;
 
-    public function setup()
+    public function setup(): void
     {
         CRUD::setModel(config('backpack-async-import-export.import_export_model'));
         CRUD::setRoute(
@@ -68,7 +68,7 @@ class ExportCrudController extends CrudController
         );
     }
 
-    protected function setupDownloadRoutes($segment, $routeName, $controller)
+    protected function setupDownloadRoutes(string $segment, string $routeName, string $controller): void
     {
         Route::get($segment . '/{export}/download', [
             'as' => $routeName . '.download',
@@ -81,13 +81,10 @@ class ExportCrudController extends CrudController
     {
         $this->setupListOperation();
 
-        /**
-         * @psalm-suppress UndefinedMagicMethod
-         */
-        CRUD::column(ImportExport::COLUMN_ERROR)->limit(1000);
+        CRUD::column(ImportExport::COLUMN_ERROR)->limit(1000); // @phpstan-ignore-line
     }
 
-    protected function setupListOperation()
+    protected function setupListOperation(): void
     {
         CRUD::column('user_id')->label(__('backpack-async-export::export.columns.user_id'));
         CRUD::column('export_type_name')->label(__('backpack-async-export::export.columns.export_type'));

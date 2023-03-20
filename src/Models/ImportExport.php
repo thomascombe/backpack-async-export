@@ -128,7 +128,7 @@ class ImportExport extends Model implements ImportExportInterface
     protected function isReady(): Attribute
     {
         return Attribute::make(
-            get: fn () => ImportExportStatus::Successful === $this->{ImportExport::COLUMN_STATUS}
+            get: fn (): bool => ImportExportStatus::Successful === $this->{ImportExport::COLUMN_STATUS}
                 && Storage::disk($this->disk)->exists($this->{self::COLUMN_FILENAME}),
         );
     }

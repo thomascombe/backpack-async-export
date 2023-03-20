@@ -1,23 +1,17 @@
-name: "PHPStan dev"
+name: PHPStan
 
 on: [push]
 
 jobs:
-  phpstan-dev:
-    runs-on: "ubuntu-latest"
+  build-test:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: "Checkout code"
-        uses: "actions/checkout@v3"
-
-      - name: "Setup PHP"
-        uses: "shivammathur/setup-php@v2"
+      - uses: actions/checkout@v3
+      - uses: php-actions/composer@v6
         with:
-          php-version: "${{ matrix.php }}"
-          extensions: "dom, curl, libxml, mbstring, zip, fileinfo, sodium, gd"
-          coverage: "none"
-
-      - name: "Execute static analysis"
-        uses: php-actions/phpstan@v3
+          dev: no
+          args: --ignore-platform-reqs
+      - uses: php-actions/phpstan@v3
         with:
           path: src/

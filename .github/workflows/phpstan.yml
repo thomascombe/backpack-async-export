@@ -12,6 +12,11 @@ jobs:
         with:
           dev: no
           args: --ignore-platform-reqs
+      - uses: actions/upload-artifact@v3
+        with:
+          name: larastan
+          path: |
+            vendor/nunomaduro/larastan/extension.neon
       - uses: php-actions/phpstan@v3
         with:
           path: src/

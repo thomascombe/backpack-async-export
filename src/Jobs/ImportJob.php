@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Thomascombe\BackpackAsyncExport\Enums\ActionType;
-use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
+use Thomascombe\BackpackAsyncExport\Enums\ImportExportStatus;
 use Thomascombe\BackpackAsyncExport\Models\ImportExport;
 
 class ImportJob implements ShouldQueue
@@ -22,20 +22,20 @@ class ImportJob implements ShouldQueue
     use SerializesModels;
 
     private ImportExport $export;
-    private array $exportParameters;
+    readonly private array $exportParameters;
 
-    public function __construct(ImportExport $export, ...$exportParameters)
+    public function __construct(ImportExport $export, array ...$exportParameters)
     {
         $this->export = $export;
         $this->exportParameters = $exportParameters;
     }
 
-    public function handle()
+    public function handle(): void
     {
         if ($this->export->action_type !== ActionType::Import) {
-            $message = sprintf('Import of type "%s" try to be import', $this->export->action_type);
+            $message = sprintf('Import of type "%s" try to be import', $this->export->action_type->value);
             $this->export->update([
-                ImportExport::COLUMN_STATUS => ExportStatus::Error,
+                ImportExport::COLUMN_STATUS => ImportExportStatus::Error,
                 ImportExport::COLUMN_ERROR => $message,
             ]);
             Log::error($message);
@@ -43,7 +43,7 @@ class ImportJob implements ShouldQueue
         }
 
         $this->export->update([
-            ImportExport::COLUMN_STATUS => ExportStatus::Processing,
+            ImportExport::COLUMN_STATUS => ImportExportStatus::Processing,
         ]);
 
         try {
@@ -58,10 +58,10 @@ class ImportJob implements ShouldQueue
                 config('backpack-async-import-export.disk')
             );
 
-            $this->export->{ImportExport::COLUMN_STATUS} = ExportStatus::Successful;
+            $this->export->{ImportExport::COLUMN_STATUS} = ImportExportStatus::Successful;
             $this->export->save();
             $this->export->update([
-                ImportExport::COLUMN_STATUS => ExportStatus::Successful,
+                ImportExport::COLUMN_STATUS => ImportExportStatus::Successful,
                 ImportExport::COLUMN_COMPLETED_AT => now(),
             ]);
 
@@ -75,7 +75,7 @@ class ImportJob implements ShouldQueue
             }
         } catch (\Exception|\Throwable $exception) {
             $this->export->update([
-                ImportExport::COLUMN_STATUS => ExportStatus::Error,
+                ImportExport::COLUMN_STATUS => ImportExportStatus::Error,
                 ImportExport::COLUMN_ERROR => $exception->getMessage(),
             ]);
             Log::error(__('backpack-async-export::import.errors.global-export'), ['exception' => $exception]);

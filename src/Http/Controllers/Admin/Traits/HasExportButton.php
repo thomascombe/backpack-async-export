@@ -6,6 +6,7 @@ use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
+use Prologue\Alerts\Facades\Alert;
 use Symfony\Component\HttpFoundation\Response;
 use Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Interfaces\ExportableCrud;
 use Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Interfaces\MultiExportableCrud;
@@ -24,11 +25,12 @@ trait HasExportButton
     /**
      * @throws \Exception
      */
-    protected function addExportButtons()
+    protected function addExportButtons(): void
     {
         $this->checkExportInterfaceImplementation();
 
         $exports = [MultiExportableCrud::DEFAULT_EXPORT_NAME => null];
+
         if ($this instanceof MultiExportableCrud) {
             $exports = $this->getAvailableExports();
             $this->checkExportMethod($exports);
@@ -41,7 +43,7 @@ trait HasExportButton
     /**
      * @throws \Exception
      */
-    protected function setupExportRoutes($segment, $routeName, $controller)
+    protected function setupExportRoutes($segment, $routeName, $controller): void
     {
         $this->checkExportInterfaceImplementation();
 
@@ -69,7 +71,11 @@ trait HasExportButton
         $parameters = $this->{$this->getExportParametersMethodName($export)}();
 
         ExportJob::dispatch($exportModel, ...$parameters);
-        \Alert::info(__('backpack-async-export::export.notifications.queued'))->flash();
+        if (config('queue.default') !== 'sync') {
+            Alert::info(__('backpack-async-export::export.notifications.queued'))->flash();
+        } else {
+            Alert::warning(__('backpack-async-export::export.notifications.sync'))->flash();
+        }
 
         return response()->redirectToRoute(config('backpack-async-import-export.admin_export_route') . '.index');
     }

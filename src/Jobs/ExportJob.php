@@ -10,7 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
-use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
+use Thomascombe\BackpackAsyncExport\Enums\ImportExportStatus;
 use Thomascombe\BackpackAsyncExport\Exports\LaravelExcel;
 use Thomascombe\BackpackAsyncExport\Exports\SimpleCsv as SimpleCsvExport;
 use Thomascombe\BackpackAsyncExport\Jobs\Export\AfterSuccess;
@@ -28,16 +28,16 @@ class ExportJob implements ShouldQueue
     private ImportExport $export;
     private array $exportParameters;
 
-    public function __construct(ImportExport $export, ...$exportParameters)
+    public function __construct(ImportExport $export, array ...$exportParameters)
     {
         $this->export = $export;
         $this->exportParameters = $exportParameters;
     }
 
-    public function handle()
+    public function handle(): self
     {
         $this->export->update([
-            ImportExport::COLUMN_STATUS => ExportStatus::Processing,
+            ImportExport::COLUMN_STATUS => ImportExportStatus::Processing,
         ]);
 
         try {
@@ -71,20 +71,23 @@ class ExportJob implements ShouldQueue
                 config('backpack-async-import-export.disk')
             );
 
+            /** @phpstan-ignore-next-line  */
             if ($result instanceof PendingDispatch) {
                 $result->chain($chain);
             } else {
                 $this->export->update([
-                    ImportExport::COLUMN_STATUS => ExportStatus::Successful,
+                    ImportExport::COLUMN_STATUS => ImportExportStatus::Successful,
                     ImportExport::COLUMN_COMPLETED_AT => now(),
                 ]);
             }
         } catch (Throwable $exception) {
             $this->export->update([
-                ImportExport::COLUMN_STATUS => ExportStatus::Error,
+                ImportExport::COLUMN_STATUS => ImportExportStatus::Error,
                 ImportExport::COLUMN_ERROR => $exception->getMessage(),
             ]);
             Log::error(__('backpack-async-export::export.errors.global-export'), ['exception' => $exception]);
         }
+
+        return $this;
     }
 }

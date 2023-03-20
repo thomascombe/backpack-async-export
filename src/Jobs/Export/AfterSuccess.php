@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
+use Thomascombe\BackpackAsyncExport\Enums\ImportExportStatus;
 use Thomascombe\BackpackAsyncExport\Models\ImportExport;
 
 class AfterSuccess implements ShouldQueue
@@ -30,7 +30,7 @@ class AfterSuccess implements ShouldQueue
     public function handle(): void
     {
         $this->model->update([
-            ImportExport::COLUMN_STATUS => ExportStatus::Successful,
+            ImportExport::COLUMN_STATUS => ImportExportStatus::Successful,
             ImportExport::COLUMN_COMPLETED_AT => Date::now(),
         ]);
     }

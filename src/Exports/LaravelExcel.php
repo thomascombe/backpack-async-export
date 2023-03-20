@@ -4,7 +4,7 @@ namespace Thomascombe\BackpackAsyncExport\Exports;
 
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\Exportable;
-use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
+use Thomascombe\BackpackAsyncExport\Enums\ImportExportStatus;
 use Thomascombe\BackpackAsyncExport\Models\ImportExport;
 use Throwable;
 
@@ -12,16 +12,13 @@ abstract class LaravelExcel
 {
     use Exportable;
 
-    /**
-     * @var ImportExport
-     */
-    protected $model;
+    protected ImportExport $model;
 
     public function failed(Throwable $exception): void
     {
         if (null !== ($model = $this->getModel())) {
             $model->update([
-                ImportExport::COLUMN_STATUS => ExportStatus::Error,
+                ImportExport::COLUMN_STATUS => ImportExportStatus::Error,
                 ImportExport::COLUMN_ERROR => $exception->getMessage(),
             ]);
         }

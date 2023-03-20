@@ -9,6 +9,7 @@
 This is a package to manage async export and import in [Backpack](https://backpackforlaravel.com/) for Laravel
 
 <p align="center"><img src="/docs/images/demo.png" alt="Demo of Laravel Backpack Async Export"></p>
+<p align="center"><img src="/docs/images/demo_ended.png" alt="Demo of Laravel Backpack Async Export"></p>
 
 ## Installation
 
@@ -17,6 +18,11 @@ You can install the package via composer:
 ```bash
 composer require thomascombe/backpack-async-export
 ```
+
+| Version | PHP        | Laravel             | Backpack     |
+|---------|------------|---------------------|--------------|
+| 1.x     | 7.4 - ^8.0 | ^8.0 - ^9.0 - ^10.0 | 4.1.* - ~5.0 |
+| 2.x     | ^8.1       | ^9.0 - ^10.0        | ~5.5         |
 
 You can publish and run the migrations with:
 
@@ -64,7 +70,7 @@ You can make your export class extends our [LaravelExcel](./src/Exports/LaravelE
 
 ### Create your controller
 ```bash
-php artisan backpack:crud {Name}CrudController
+php artisan backpack:crud {ModelName}
 ```
 
 ### Your controller need to implement interface
@@ -92,7 +98,7 @@ public function setup()
 
 ```php
 use Thomascombe\BackpackAsyncExport\Enums\ActionType;
-use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
+use Thomascombe\BackpackAsyncExport\Enums\ImportExportStatus;
 use Thomascombe\BackpackAsyncExport\Models\ImportExport;
 
 public function getExport(): ImportExport
@@ -100,7 +106,7 @@ public function getExport(): ImportExport
     return ImportExport::create([
         ImportExport::COLUMN_USER_ID => backpack_user()->id,
         ImportExport::COLUMN_ACTION_TYPE => ActionType::Export,
-        ImportExport::COLUMN_STATUS => ExportStatus::Created,
+        ImportExport::COLUMN_STATUS => ImportExportStatus::Created,
         ImportExport::COLUMN_FILENAME => sprintf('export/users_%s.xlsx', now()->toIso8601String()),
         ImportExport::COLUMN_EXPORT_TYPE => UserExport::class,
     ]);
@@ -201,15 +207,15 @@ public function setup()
 
 ```php
 use Thomascombe\BackpackAsyncExport\Enums\ActionType;
-use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
+use Thomascombe\BackpackAsyncExport\Enums\ImportExportStatus;
 use Thomascombe\BackpackAsyncExport\Models\ImportExport;
 
 public function getImport(): ImportExport
 {
     return ImportExport::create([
         ImportExport::COLUMN_USER_ID => backpack_user()->id,
-        ImportExport::COLUMN_ACTION_TYPE => ActionType::Import,
-        ImportExport::COLUMN_STATUS => ExportStatus::Created,
+        ImportExport::COLUMN_ACTION_TYPE => ActionType::Import->value,
+        ImportExport::COLUMN_STATUS => ImportExportStatus::Created,
         ImportExport::COLUMN_FILENAME => '',
         ImportExport::COLUMN_EXPORT_TYPE => UserImport::class,
     ]);

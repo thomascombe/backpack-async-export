@@ -18,6 +18,7 @@ return [
     ],
     'notifications' => [
         'queued' => 'Import launched! Results will be available when ready on "Import" tab',
+        'sync' => 'Import launched in sync! Results is available on "Import" tab',
     ],
     'errors' => [
         'global-import' => 'Error during import',

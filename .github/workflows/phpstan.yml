@@ -1,22 +1,23 @@
-name: PHPStan
+name: "PHPStan dev"
 
 on: [push]
 
 jobs:
-  build-test:
-    runs-on: ubuntu-latest
+  phpstan-dev:
+    runs-on: "ubuntu-latest"
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: php-actions/composer@v6
+      - name: "Checkout code"
+        uses: "actions/checkout@v3"
+
+      - name: "Setup PHP"
+        uses: "shivammathur/setup-php@v2"
         with:
-          dev: no
-          args: --ignore-platform-reqs
-      - uses: actions/upload-artifact@v3
-        with:
-          name: larastan
-          path: |
-            vendor/nunomaduro/larastan/extension.neon
-      - uses: php-actions/phpstan@v3
+          php-version: "${{ matrix.php }}"
+          extensions: "dom, curl, libxml, mbstring, zip, fileinfo, sodium, gd"
+          coverage: "none"
+
+      - name: "Execute static analysis"
+        uses: php-actions/phpstan@v3
         with:
           path: src/

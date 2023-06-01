@@ -10,6 +10,7 @@ use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Thomascombe\BackpackAsyncExport\Enums\ActionType;
 use Thomascombe\BackpackAsyncExport\Models\ImportExport;
@@ -47,20 +48,17 @@ class ExportCrudController extends CrudController
         $this->crud->addButtonFromModelFunction('line', 'download', 'getDownloadButton');
     }
 
-    public function download(ImportExport $export): StreamedResponse
+    public function download(ImportExport $export): BinaryFileResponse
     {
         if (!$export->isReady) {
             abort(Response::HTTP_NOT_FOUND);
         }
 
-        $fileContent = file_get_contents($export->storagePath);
         $mimetype = File::mimeType($export->storagePath);
         $fileNameExplode = explode('/', $export->{ImportExport::COLUMN_FILENAME});
 
-        return response()->streamDownload(
-            function () use ($fileContent): void {
-                echo $fileContent;
-            },
+        return response()->download(
+            $export->storagePath,
             end($fileNameExplode),
             [
                 'Content-Type: ' . $mimetype,

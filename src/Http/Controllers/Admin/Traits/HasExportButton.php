@@ -70,7 +70,7 @@ trait HasExportButton
         $exportModel = $this->{$this->getExportMethodName($export)}();
         $parameters = $this->{$this->getExportParametersMethodName($export)}();
 
-        ExportJob::dispatch($exportModel, ...$parameters);
+        ExportJob::dispatch($exportModel, $parameters);
         if (config('queue.default') !== 'sync') {
             Alert::info(__('backpack-async-export::export.notifications.queued'))->flash();
         } else {

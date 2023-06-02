@@ -28,7 +28,7 @@ class ExportJob implements ShouldQueue
     private ImportExport $export;
     private array $exportParameters;
 
-    public function __construct(ImportExport $export, array ...$exportParameters)
+    public function __construct(ImportExport $export, array $exportParameters)
     {
         $this->export = $export;
         $this->exportParameters = $exportParameters;

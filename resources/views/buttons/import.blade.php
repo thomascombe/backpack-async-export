@@ -1,7 +1,8 @@
 @if ($crud->hasAccess('list'))
     @php($route = $crud->get('import_route'))
+    @php($url = url($crud->route . '/' . $route))
 
-    <a href="{{ $route }}" class="btn btn-secondary">
+    <a href="{{ $url }}" class="btn btn-secondary">
         <i class="la la-upload"></i> @lang('backpack-async-export::import.buttons.import')
     </a>
 @endif

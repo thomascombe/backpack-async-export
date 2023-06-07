@@ -22,7 +22,7 @@ class ImportJob implements ShouldQueue
     use SerializesModels;
 
     private ImportExport $export;
-    readonly private array $exportParameters;
+    private array $exportParameters;
 
     public function __construct(ImportExport $export, array ...$exportParameters)
     {

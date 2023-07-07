@@ -12,7 +12,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
+use Thomascombe\BackpackAsyncExport\Enums\ImportExportStatus;
 use Thomascombe\BackpackAsyncExport\Exports\SimpleCsv as Export;
 use Thomascombe\BackpackAsyncExport\Models\ImportExport;
 use Throwable;
@@ -25,7 +25,7 @@ class SimpleCsv implements ShouldQueue
     protected ImportExport $model;
 
     /**
-     * @var bool|resource|closed-resource
+     * @var bool|resource
      */
     protected $handle;
 
@@ -45,6 +45,7 @@ class SimpleCsv implements ShouldQueue
     {
         try {
             $this->openFile();
+            $this->addUtf8Header();
 
             fputcsv($this->handle, $this->export->headings());
 
@@ -65,7 +66,7 @@ class SimpleCsv implements ShouldQueue
             fclose($this->handle);
         } catch (Throwable $exception) {
             $this->model->update([
-                ImportExport::COLUMN_STATUS => ExportStatus::Error,
+                ImportExport::COLUMN_STATUS => ImportExportStatus::Error,
                 ImportExport::COLUMN_ERROR => $exception->getMessage(),
             ]);
 
@@ -100,5 +101,10 @@ class SimpleCsv implements ShouldQueue
         );
 
         return $this;
+    }
+
+    public function addUtf8Header(): void
+    {
+        fprintf($this->handle, sprintf("%s%s%s", chr(0xEF), chr(0xBB), chr(0xBF)));
     }
 }

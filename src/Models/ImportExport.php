@@ -3,14 +3,30 @@
 namespace Thomascombe\BackpackAsyncExport\Models;
 
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
-use Thomascombe\BackpackAsyncExport\Enums\ExportStatus;
+use Illuminate\Support\Str;
+use Thomascombe\BackpackAsyncExport\Enums\ActionType;
+use Thomascombe\BackpackAsyncExport\Enums\ImportExportStatus;
 use Thomascombe\BackpackAsyncExport\Exports\ExportWithName;
 use Thomascombe\BackpackAsyncExport\Models\Interfaces\ImportExportInterface;
 
+/**
+ * @property integer $user_id
+ * @property ActionType $action_type
+ * @property string $export_type
+ * @property string $filename
+ * @property string $disk
+ * @property ImportExportStatus $status
+ * @property string $error
+ * @property Carbon $completed_at
+ *
+ * @property boolean $isReady
+ */
 class ImportExport extends Model implements ImportExportInterface
 {
     use CrudTrait;
@@ -38,9 +54,12 @@ class ImportExport extends Model implements ImportExportInterface
 
     protected $casts = [
         self::COLUMN_USER_ID => 'int',
+        self::COLUMN_COMPLETED_AT => 'datetime',
+        self::COLUMN_ACTION_TYPE => ActionType::class,
+        self::COLUMN_STATUS => ImportExportStatus::class,
     ];
 
-    protected $dates = [
+    protected array $dates = [
         self::COLUMN_COMPLETED_AT,
     ];
 
@@ -66,7 +85,7 @@ class ImportExport extends Model implements ImportExportInterface
             return $exportType::getName();
         }
 
-        return $exportType;
+        return Str::afterLast($exportType, '\\');
     }
 
     public function getDiskAttribute(): string
@@ -100,14 +119,17 @@ class ImportExport extends Model implements ImportExportInterface
         }
 
         return sprintf(
-            '<button type="button" class="btn btn-sm btn-link" disabled="disabled"><span class="la la-download"></span> %s</button>',
+            '<button type="button" class="btn btn-sm btn-link" disabled="disabled">'
+            . '<span class="la la-download"></span> %s</button>',
             __('backpack-async-export::export.buttons.download')
         );
     }
 
-    public function getIsReadyAttribute(): bool
+    protected function isReady(): Attribute
     {
-        return ExportStatus::Successful === $this->{ImportExport::COLUMN_STATUS}
-            && Storage::disk($this->disk)->exists($this->{self::COLUMN_FILENAME});
+        return Attribute::make(
+            get: fn (): bool => ImportExportStatus::Successful === $this->{ImportExport::COLUMN_STATUS}
+                && Storage::disk($this->disk)->exists($this->{self::COLUMN_FILENAME}),
+        );
     }
 }

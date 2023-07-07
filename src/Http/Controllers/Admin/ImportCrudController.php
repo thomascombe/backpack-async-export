@@ -20,7 +20,7 @@ class ImportCrudController extends CrudController
     use ListOperation;
     use ShowOperation;
 
-    public function setup()
+    public function setup(): void
     {
         CRUD::setModel(config('backpack-async-import-export.import_export_model'));
         CRUD::setRoute(
@@ -34,7 +34,7 @@ class ImportCrudController extends CrudController
             __('backpack-async-export::import.name.singular'),
             __('backpack-async-export::import.name.plurial')
         );
-        $this->crud->query->where('action_type', ActionType::Import);
+        $this->crud->query->where('action_type', ActionType::Import->value);
     }
 
     protected function setupListOperation(): void
@@ -42,7 +42,7 @@ class ImportCrudController extends CrudController
         CRUD::column('user_id')->label(__('backpack-async-export::import.columns.user_id'));
         CRUD::column('export_type_name')->label(__('backpack-async-export::import.columns.export_type'));
         CRUD::column('filename')->label(__('backpack-async-export::import.columns.filename'));
-        CRUD::column('status')->label(__('backpack-async-export::import.columns.status'));
+        CRUD::column('status')->type('enum')->label(__('backpack-async-export::import.columns.status'));
         CRUD::column('error')->label(__('backpack-async-export::import.columns.error'));
         CRUD::column('completed_at')->label(__('backpack-async-export::import.columns.completed_at'));
     }
@@ -51,9 +51,6 @@ class ImportCrudController extends CrudController
     {
         $this->setupListOperation();
 
-        /**
-         * @psalm-suppress UndefinedMagicMethod
-         */
-        CRUD::column(ImportExport::COLUMN_ERROR)->limit(1000);
+        CRUD::column(ImportExport::COLUMN_ERROR)->limit(1000); // @phpstan-ignore-line
     }
 }

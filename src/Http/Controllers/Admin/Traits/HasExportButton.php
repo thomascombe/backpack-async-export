@@ -42,6 +42,7 @@ trait HasExportButton
         $this->checkExportInterfaceImplementation();
 
         $exports = [MultiExportableCrud::DEFAULT_EXPORT_NAME => null];
+
         if ($this instanceof MultiExportableCrud) {
             $exports = $this->getAvailableExports();
             $this->checkExportMethod($exports);
@@ -81,8 +82,12 @@ trait HasExportButton
         $exportModel = $this->{$this->getExportMethodName($export)}();
         $parameters = $this->{$this->getExportParametersMethodName($export)}();
 
-        ExportJob::dispatch($exportModel, ...$parameters);
-        Alert::info(__('backpack-async-export::export.notifications.queued'))->flash();
+        ExportJob::dispatch($exportModel, $parameters);
+        if (config('queue.default') !== 'sync') {
+            Alert::info(__('backpack-async-export::export.notifications.queued'))->flash();
+        } else {
+            Alert::warning(__('backpack-async-export::export.notifications.sync'))->flash();
+        }
 
         return response()->redirectToRoute(config('backpack-async-import-export.admin_export_route') . '.index');
     }

@@ -2,18 +2,8 @@
 
 namespace Thomascombe\BackpackAsyncExport\Enums;
 
-/**
- * @phpcs:disable Generic.NamingConventions.UpperCaseConstantName
- */
-abstract class ActionType
+enum ActionType: string
 {
-    public const Import = 'import';
-    public const Export = 'export';
-
-    public static function items(): array
-    {
-        $reflectionClass = new \ReflectionClass(static::class);
-
-        return $reflectionClass->getConstants();
-    }
+    case Import = 'import';
+    case Export = 'export';
 }

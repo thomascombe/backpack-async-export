@@ -3,9 +3,11 @@
 namespace Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Traits;
 
 use Backpack\CRUD\app\Http\Controllers\CrudController;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
+use Prologue\Alerts\Facades\Alert;
 use Symfony\Component\HttpFoundation\Response;
 use Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Interfaces\ExportableCrud;
 use Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Interfaces\MultiExportableCrud;
@@ -20,11 +22,22 @@ use Thomascombe\BackpackAsyncExport\Jobs\ExportJob;
  */
 trait HasExportButton
 {
+    /**
+     * @throws Exception
+     */
+    protected function setupExportDefaults(): void
+    {
+        $this->crud->allowAccess('export');
+
+        $this->crud->operation('list', function () {
+            $this->addExportButtons();
+        });
+    }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    protected function addExportButtons()
+    protected function addExportButtons(): void
     {
         $this->checkExportInterfaceImplementation();
 
@@ -39,9 +52,9 @@ trait HasExportButton
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    protected function setupExportRoutes($segment, $routeName, $controller)
+    protected function setupExportRoutes(string $segment, string $routeName, string $controller): void
     {
         $this->checkExportInterfaceImplementation();
 
@@ -53,7 +66,7 @@ trait HasExportButton
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function export(): RedirectResponse
     {
@@ -69,23 +82,23 @@ trait HasExportButton
         $parameters = $this->{$this->getExportParametersMethodName($export)}();
 
         ExportJob::dispatch($exportModel, ...$parameters);
-        \Alert::info(__('backpack-async-export::export.notifications.queued'))->flash();
+        Alert::info(__('backpack-async-export::export.notifications.queued'))->flash();
 
         return response()->redirectToRoute(config('backpack-async-import-export.admin_export_route') . '.index');
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     protected function checkExportInterfaceImplementation(): void
     {
         if (!$this instanceof ExportableCrud) {
-            throw new \Exception(sprintf('%s need to implement %s', self::class, ExportableCrud::class));
+            throw new Exception(sprintf('%s need to implement %s', self::class, ExportableCrud::class));
         }
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     protected function checkExportMethod(array $exports): void
     {
@@ -94,7 +107,7 @@ trait HasExportButton
             $exportParametersMethodName = $this->getExportParametersMethodName($exportKey);
             foreach ([$exportMethodName, $exportParametersMethodName] as $methodName) {
                 if (!method_exists($this, $methodName)) {
-                    throw new \Exception(
+                    throw new Exception(
                         sprintf('%s need method "%s"', self::class, $methodName)
                     );
                 }

@@ -1,4 +1,4 @@
-@if ($crud->hasAccess('list'))
+@if ($crud->hasAccess('import'))
     @php($route = $crud->get('import_route'))
 
     <a href="{{ $route }}" class="btn btn-secondary">

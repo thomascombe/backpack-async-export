@@ -3,6 +3,7 @@
 namespace Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Traits;
 
 use Backpack\CRUD\app\Http\Controllers\CrudController;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Route;
@@ -25,40 +26,7 @@ use Thomascombe\BackpackAsyncExport\Models\ImportExport;
 trait HasImportButton
 {
     /**
-     * @throws \Exception
-     */
-    protected function addImportButtons()
-    {
-        $this->checkImportInterfaceImplementation();
-
-        $this->crud->setting(
-            'import_route',
-            $this->crud->getRoute() . '/' . config('backpack-async-import-export.admin_import_route')
-        );
-        $this->crud->addButton('top', 'import', 'view', 'backpack-async-export::buttons/import', 'end');
-    }
-
-    /**
-     * @throws \Exception
-     */
-    protected function setupImportRoutes($segment, $routeName, $controller)
-    {
-        $this->checkImportInterfaceImplementation();
-
-        Route::get($segment . '/' . config('backpack-async-import-export.admin_import_route'), [
-            'as' => $routeName . '.import',
-            'uses' => $controller . '@import',
-            'operation' => 'import',
-        ]);
-        Route::post($segment . '/' . config('backpack-async-import-export.admin_import_route'), [
-            'as' => $routeName . '.import-submit',
-            'uses' => $controller . '@importSubmit',
-            'operation' => 'import-submit',
-        ]);
-    }
-
-    /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function import(): View
     {
@@ -81,14 +49,19 @@ trait HasImportButton
                         isset($parameters['private']) ? $parameters['private']['mimetypes'] : []
                     ),
                 ],
-            ]
+            ],
         ];
 
         return view('backpack-async-export::pages.import', $this->data);
     }
 
+    protected function getImportParametersMethodName(): string
+    {
+        return 'getImportParameters';
+    }
+
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function importSubmit(ImportRequest $request): RedirectResponse
     {
@@ -98,7 +71,7 @@ trait HasImportButton
         $exportModel = $this->{$this->getImportMethodName()}();
         $parameters = $this->{$this->getImportParametersMethodName()}();
 
-        list($mimetypeState, $validator) = $this->checkFileMimetype($request, $parameters);
+        list($mimetypeState, $validator) = $this->checkFileMimetype($request);
         if (!$mimetypeState) {
             return redirect()
                 ->back()
@@ -109,9 +82,14 @@ trait HasImportButton
         $this->saveUploadFile($request, $exportModel);
 
         ImportJob::dispatch($exportModel, ...$parameters);
-        \Alert::info(__('backpack-async-export::import.notifications.queued'))->flash();
+        Alert::info(__('backpack-async-export::import.notifications.queued'))->flash();
 
         return response()->redirectToRoute(config('backpack-async-import-export.admin_import_route') . '.index');
+    }
+
+    protected function getImportMethodName(): string
+    {
+        return 'getImport';
     }
 
     private function checkFileMimetype(ImportRequest $request): array
@@ -140,26 +118,6 @@ trait HasImportButton
         return [true];
     }
 
-    /**
-     * @throws \Exception
-     */
-    protected function checkImportInterfaceImplementation(): void
-    {
-        if (!$this instanceof ImportableCrud) {
-            throw new \Exception(sprintf('%s need to implement %s', self::class, ImportableCrud::class));
-        }
-    }
-
-    protected function getImportMethodName(): string
-    {
-        return 'getImport';
-    }
-
-    protected function getImportParametersMethodName(): string
-    {
-        return 'getImportParameters';
-    }
-
     private function saveUploadFile(ImportRequest $request, ImportExport $exportModel): void
     {
         /** @var UploadedFile $file */
@@ -172,5 +130,60 @@ trait HasImportButton
             );
         $exportModel->{ImportExport::COLUMN_FILENAME} = $filename;
         $exportModel->save();
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function setupImportDefaults(): void
+    {
+        $this->crud->allowAccess('import');
+
+        $this->crud->operation('list', function () {
+            $this->addImportButtons();
+        });
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function addImportButtons(): void
+    {
+        $this->checkImportInterfaceImplementation();
+
+        $this->crud->setting(
+            'import_route',
+            $this->crud->getRoute() . '/' . config('backpack-async-import-export.admin_import_route')
+        );
+        $this->crud->addButton('top', 'import', 'view', 'backpack-async-export::buttons/import', 'end');
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function checkImportInterfaceImplementation(): void
+    {
+        if (!$this instanceof ImportableCrud) {
+            throw new Exception(sprintf('%s need to implement %s', self::class, ImportableCrud::class));
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function setupImportRoutes($segment, $routeName, $controller)
+    {
+        $this->checkImportInterfaceImplementation();
+
+        Route::get($segment . '/' . config('backpack-async-import-export.admin_import_route'), [
+            'as' => $routeName . '.import',
+            'uses' => $controller . '@import',
+            'operation' => 'import',
+        ]);
+        Route::post($segment . '/' . config('backpack-async-import-export.admin_import_route'), [
+            'as' => $routeName . '.import-submit',
+            'uses' => $controller . '@importSubmit',
+            'operation' => 'import-submit',
+        ]);
     }
 }

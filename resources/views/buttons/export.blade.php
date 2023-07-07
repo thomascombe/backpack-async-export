@@ -1,4 +1,4 @@
-@if ($crud->hasAccess('list'))
+@if ($crud->hasAccess('export'))
     @php($exports = $crud->get('exports', ['default' => null]))
     @php($url = url($crud->route . '/' . config('backpack-async-import-export.admin_export_route')))
     @foreach($exports as $export => $exportsName)

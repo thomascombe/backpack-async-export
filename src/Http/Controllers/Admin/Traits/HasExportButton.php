@@ -3,6 +3,7 @@
 namespace Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Traits;
 
 use Backpack\CRUD\app\Http\Controllers\CrudController;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -21,9 +22,20 @@ use Thomascombe\BackpackAsyncExport\Jobs\ExportJob;
  */
 trait HasExportButton
 {
+    /**
+     * @throws Exception
+     */
+    protected function setupExportDefaults(): void
+    {
+        $this->crud->allowAccess('export');
+
+        $this->crud->operation('list', function () {
+            $this->addExportButtons();
+        });
+    }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     protected function addExportButtons(): void
     {
@@ -41,9 +53,9 @@ trait HasExportButton
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    protected function setupExportRoutes($segment, $routeName, $controller): void
+    protected function setupExportRoutes(string $segment, string $routeName, string $controller): void
     {
         $this->checkExportInterfaceImplementation();
 
@@ -55,7 +67,7 @@ trait HasExportButton
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function export(): RedirectResponse
     {
@@ -81,17 +93,17 @@ trait HasExportButton
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     protected function checkExportInterfaceImplementation(): void
     {
         if (!$this instanceof ExportableCrud) {
-            throw new \Exception(sprintf('%s need to implement %s', self::class, ExportableCrud::class));
+            throw new Exception(sprintf('%s need to implement %s', self::class, ExportableCrud::class));
         }
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     protected function checkExportMethod(array $exports): void
     {
@@ -100,7 +112,7 @@ trait HasExportButton
             $exportParametersMethodName = $this->getExportParametersMethodName($exportKey);
             foreach ([$exportMethodName, $exportParametersMethodName] as $methodName) {
                 if (!method_exists($this, $methodName)) {
-                    throw new \Exception(
+                    throw new Exception(
                         sprintf('%s need method "%s"', self::class, $methodName)
                     );
                 }

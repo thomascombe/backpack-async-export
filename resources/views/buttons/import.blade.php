@@ -1,4 +1,4 @@
-@if ($crud->hasAccess('list'))
+@if ($crud->hasAccess('import'))
     @php($route = $crud->get('import_route'))
     @php($url = url('/' . $route))
 

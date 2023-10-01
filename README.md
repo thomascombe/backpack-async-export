@@ -58,6 +58,8 @@ return [
 ### Add export item in menu
 ```bash
 php artisan backpack:add-sidebar-content "<li class='nav-item'><a class='nav-link' href='{{ backpack_url('export') }}'><i class='nav-icon la la-file-export'></i> <span>Export</span></a></li>"
+# or 
+php artisan backpack:add-menu-content "<x-backpack::menu-item title='Export' icon='la la-file-export' :link=\"backpack_url('export')\" />"
 ```
 
 ### Create you export class
@@ -82,7 +84,7 @@ class {Name}CrudController extends CrudController implements ExportableCrud {}
 
 ### Use awesome trait
 ```php
-use Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Traits\HasExportButton;
+use \Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Traits\HasExportButton;
 ```
 
 ### Call method to add buttons

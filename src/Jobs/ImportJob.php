@@ -21,13 +21,10 @@ class ImportJob implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    private ImportExport $export;
-    private array $exportParameters;
-
-    public function __construct(ImportExport $export, array ...$exportParameters)
-    {
-        $this->export = $export;
-        $this->exportParameters = $exportParameters;
+    public function __construct(
+        private ImportExport $export,
+        private array $exportParameters
+    ) {
     }
 
     public function handle(): void

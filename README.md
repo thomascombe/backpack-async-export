@@ -23,6 +23,7 @@ composer require thomascombe/backpack-async-export
 |---------|------------|---------------------|--------------|
 | 1.x     | 7.4 - ^8.0 | ^8.0 - ^9.0 - ^10.0 | 4.1.* - ~5.0 |
 | 2.x     | ^8.1       | ^9.0 - ^10.0        | ~5.5         |
+| 3.x     | ^8.1       | ^10.0               | ~6.0         |
 
 You can publish and run the migrations with:
 
@@ -32,6 +33,7 @@ php artisan migrate
 ```
 
 You can publish the config file with:
+
 ```bash
 php artisan vendor:publish --provider="Thomascombe\BackpackAsyncExport\BackpackAsyncExportServiceProvider" --tag="backpack-async-export-config"
 ```
@@ -56,6 +58,7 @@ return [
 ## Usage for export
 
 ### Add export item in menu
+
 ```bash
 php artisan backpack:add-sidebar-content "<li class='nav-item'><a class='nav-link' href='{{ backpack_url('export') }}'><i class='nav-icon la la-file-export'></i> <span>Export</span></a></li>"
 # or 
@@ -63,19 +66,23 @@ php artisan backpack:add-menu-content "<x-backpack::menu-item title='Export' ico
 ```
 
 ### Create you export class
+
 ```bash
 php artisan make:export UserExport --model=App/Models/User
 ```
+
 For all details, have a look at [Laravel Excel Package](https://laravel-excel.com/).
 
 You can make your export class extends our [LaravelExcel](./src/Exports/LaravelExcel.php) abstract.
 
 ### Create your controller
+
 ```bash
 php artisan backpack:crud {ModelName}
 ```
 
 ### Your controller need to implement interface
+
 ```php
 use Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Interfaces\ExportableCrud;
 
@@ -83,11 +90,13 @@ class {Name}CrudController extends CrudController implements ExportableCrud {}
 ```
 
 ### Use awesome trait
+
 ```php
 use \Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Traits\HasExportButton;
 ```
 
 ### Call method to add buttons
+
 ```php
 public function setup()
 {
@@ -169,22 +178,27 @@ class UserExport extends SimpleCsv
 ## Usage for import
 
 ### Add import item in menu
+
 ```bash
 php artisan backpack:add-sidebar-content "<li class='nav-item'><a class='nav-link' href='{{ backpack_url('import') }}'><i class='nav-icon la la-file-import'></i> <span>Import</span></a></li>"
 ```
 
 ### Create you import class
+
 ```bash
 php artisan make:import UserImport --model=App/Models/User
 ```
+
 For all details, have a look at [Laravel Excel Package](https://laravel-excel.com/)
 
 ### Create your controller
+
 ```bash
 php artisan backpack:crud {Name}CrudController
 ```
 
 ### Your controller need to implement interface
+
 ```php
 use Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Interfaces\ImportableCrud;
 
@@ -192,11 +206,13 @@ class {Name}CrudController extends CrudController implements ImportableCrud {}
 ```
 
 ### Use awesome trait
+
 ```php
 use Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Traits\HasImportButton;
 ```
 
 ### Call method to add buttons
+
 ```php
 public function setup()
 {
@@ -237,6 +253,7 @@ public function getImportParameters(): array
 ## Need more?
 
 ### Override ImportExport model
+
 You can override `ImportExport` model using config : `import_export_model`.  
 Your model class **need** to implement `\Thomascombe\BackpackAsyncExport\Models\ImportExport`.
 
@@ -247,7 +264,9 @@ class ImportExport extends \Thomascombe\BackpackAsyncExport\Models\ImportExport
 ```
 
 ### Update export name
-Package allow to change export name with interface on your export class: `Thomascombe\BackpackAsyncExport\Exports\ExportWithName` 
+
+Package allow to change export name with interface on your export
+class: `Thomascombe\BackpackAsyncExport\Exports\ExportWithName`
 
 ```php
 
@@ -269,7 +288,8 @@ class UserExport implements ExportWithName
 ### Multi export by CRUD?
 
 You can easily have multi export on save CRUD.  
-Your CRUD controller need to implement `Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Interfaces\MultiExportableCrud` interface.  
+Your CRUD controller need to
+implement `Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Interfaces\MultiExportableCrud` interface.
 
 ```php
 public function getAvailableExports(): array
@@ -280,10 +300,12 @@ public function getAvailableExports(): array
     ];
 }
 ```
-**Array keys**: key for query params and dynamic method name  
-**Array values**: Export name (display in CRUD button)  
 
-For each new export you have to add news methods: 
+**Array keys**: key for query params and dynamic method name  
+**Array values**: Export name (display in CRUD button)
+
+For each new export you have to add news methods:
+
 ```php
 public function getExport*All*(): ImportExport
 {
@@ -295,7 +317,6 @@ public function getExport*All*Parameters(): array
     return [...];
 }
 ```
-
 
 ## Testing
 

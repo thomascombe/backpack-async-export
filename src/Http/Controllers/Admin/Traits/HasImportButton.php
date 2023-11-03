@@ -62,7 +62,7 @@ trait HasImportButton
 
         $this->saveUploadFile($request, $exportModel);
 
-        ImportJob::dispatch($exportModel, ...$parameters);
+        ImportJob::dispatch($exportModel, $parameters);
         if (config('queue.default') !== 'sync') {
             Alert::info(__('backpack-async-export::import.notifications.queued'))->flash();
         } else {

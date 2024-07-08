@@ -1,22 +1,25 @@
 @extends(backpack_view('blank'))
 
-@section('header')
-    <section class="container-fluid">
-        <h2>
-            <span class="text-capitalize">{!! $crud->getHeading() ?? $crud->entity_name_plural !!}</span>
-            <small>{!! $crud->getSubheading() ?? trans('backpack-async-export::admin.operation.import') . ' ' . $crud->entity_name !!}
-                .</small>
+@php
+    $defaultBreadcrumbs = [
+      trans('backpack::crud.admin') => backpack_url('dashboard'),
+      $crud->entity_name_plural => url($crud->route),
+      trans('backpack-async-export::admin.operation.import') => false,
+    ];
 
-            @if($crud->hasAccess('list'))
-                <small>
-                    <a href="{{ url($crud->route) }}" class="d-print-none font-sm">
-                        <i class="la la-angle-double-{{ config('backpack.base.html_direction') == 'rtl' ? 'right' : 'left' }}"></i>
-                        @lang('backpack::crud.back_to_all')
-                        <span>{{ $crud->entity_name_plural }}</span>
-                    </a>
-                </small>
-            @endif
-        </h2>
+    // if breadcrumbs aren't defined in the CrudController, use the default breadcrumbs
+    $breadcrumbs = $breadcrumbs ?? $defaultBreadcrumbs;
+@endphp
+
+@section('header')
+    <section class="header-operation container-fluid animated fadeIn d-flex mb-2 align-items-baseline d-print-none" bp-section="page-header">
+        <h1 class="text-capitalize mb-0" bp-section="page-heading">{!! $crud->getHeading() ?? $crud->entity_name_plural !!}</h1>
+        <p class="ms-2 ml-2 mb-0" bp-section="page-subheading">{!! $crud->getSubheading() ?? trans('backpack-async-export::admin.operation.import').' '.$crud->entity_name !!}.</p>
+        @if ($crud->hasAccess('list'))
+            <p class="mb-0 ms-2 ml-2" bp-section="page-subheading-back-button">
+                <small><a href="{{ url($crud->route) }}" class="d-print-none font-sm"><i class="la la-angle-double-{{ config('backpack.base.html_direction') == 'rtl' ? 'right' : 'left' }}"></i> {{ trans('backpack::crud.back_to_all') }} <span>{{ $crud->entity_name_plural }}</span></a></small>
+            </p>
+        @endif
     </section>
 @endsection
 
@@ -40,8 +43,8 @@
                   ]
                 )
 
-                <div class="d-none" id="parentLoadedAssets">{{ json_encode(Assets::loaded()) }}</div>
-                <div id="saveActions" class="form-group">
+                <div class="d-none" id="parentLoadedAssets">{{ json_encode(Basset::loaded()) }}</div>
+                <div id="saveActions" class="form-group my-3">
                     <div class="btn-group" role="group">
                         <button type="submit" class="btn btn-success">
                             <span class="la la-save" role="presentation" aria-hidden="true"></span> &nbsp;

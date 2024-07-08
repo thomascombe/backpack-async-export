@@ -119,7 +119,7 @@ trait HasImportButton
             return [true, $validator];
         }
 
-        return [true];
+        return [true, null];
     }
 
     private function saveUploadFile(ImportRequest $request, ImportExport $exportModel): void

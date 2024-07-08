@@ -36,7 +36,7 @@ trait HasImportButton
         $this->data['title'] = $this->crud->getTitle();
         $parameters = $this->{$this->getImportParametersMethodName()}();
 
-        $this->data['fields'] = [
+        $this->crud->addFields([
             [
                 'name' => 'file',
                 'label' => trans('backpack-async-export::admin.column.file'),
@@ -50,7 +50,7 @@ trait HasImportButton
                     ),
                 ],
             ],
-        ];
+        ]);
 
         return view('backpack-async-export::pages.import', $this->data);
     }

@@ -33,12 +33,11 @@
 
                 @includeFirst(
                   [
-                    'backpack-async-export::vendor.backpack.crud.form_content',
                     'vendor.backpack.crud.form_content',
                     'crud::form_content'
                   ],
                   [
-                    'fields' => $fields,
+                    'fields' => $crud->fields(),
                     'action' => 'edit',
                   ]
                 )

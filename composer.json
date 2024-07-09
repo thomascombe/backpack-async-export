@@ -25,6 +25,7 @@
         "spatie/laravel-package-tools": "^1.12"
     },
     "require-dev": {
+        "laravel/scout": "^10.10",
         "nunomaduro/collision": "^8.1",
         "nunomaduro/larastan": "^2.0",
         "orchestra/testbench": "^9.0",

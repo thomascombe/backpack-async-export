@@ -22,7 +22,7 @@ composer require thomascombe/backpack-async-export
 | Version | PHP        | Laravel             | Backpack     |
 |---------|------------|---------------------|--------------|
 | 1.x     | 7.4 - ^8.0 | ^8.0 - ^9.0 - ^10.0 | 4.1.* - ~5.0 |
-| 2.x     | ^8.1       | ^9.0 - ^10.0        | ~5.5         |
+| 2.x     | ^8.1       | ^9.0 - ^10.0        | ~5.5 - ~6.0  |
 | 3.x     | ^8.2       | ^11.0               | ~6.0         |
 
 You can publish and run the migrations with:

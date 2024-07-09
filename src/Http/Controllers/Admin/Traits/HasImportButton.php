@@ -15,18 +15,16 @@ use Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Interfaces\Importable
 use Thomascombe\BackpackAsyncExport\Http\Requests\ImportRequest;
 use Thomascombe\BackpackAsyncExport\Jobs\ImportJob;
 use Thomascombe\BackpackAsyncExport\Models\ImportExport;
+use Throwable;
 
 /**
- * Trait HasImportButton
- * @package Thomascombe\BackpackAsyncExport\Http\Controllers\Admin\Traits
- *
  * @mixin CrudController
  * @mixin ImportableCrud
  */
 trait HasImportButton
 {
     /**
-     * @throws Exception
+     * @throws Throwable
      */
     public function import(): View
     {
@@ -34,23 +32,6 @@ trait HasImportButton
 
         $this->data['crud'] = $this->crud;
         $this->data['title'] = $this->crud->getTitle();
-        $parameters = $this->{$this->getImportParametersMethodName()}();
-
-        $this->crud->addFields([
-            [
-                'name' => 'file',
-                'label' => trans('backpack-async-export::admin.column.file'),
-                'type' => 'upload',
-                'upload' => true,
-                'hint' => $parameters['private']['hint'] ?? null,
-                'attributes' => [
-                    'accept' => implode(
-                        ',',
-                        isset($parameters['private']) ? $parameters['private']['mimetypes'] : []
-                    ),
-                ],
-            ],
-        ]);
 
         return view('backpack-async-export::pages.import', $this->data);
     }
@@ -61,7 +42,7 @@ trait HasImportButton
     }
 
     /**
-     * @throws Exception
+     * @throws Throwable
      */
     public function importSubmit(ImportRequest $request): RedirectResponse
     {
@@ -81,7 +62,7 @@ trait HasImportButton
 
         $this->saveUploadFile($request, $exportModel);
 
-        ImportJob::dispatch($exportModel, ...$parameters);
+        ImportJob::dispatch($exportModel, $parameters);
         if (config('queue.default') !== 'sync') {
             Alert::info(__('backpack-async-export::import.notifications.queued'))->flash();
         } else {
@@ -146,10 +127,31 @@ trait HasImportButton
         $this->crud->operation('list', function () {
             $this->addImportButtons();
         });
+
+        $this->crud->operation('import', function () {
+            $parameters = $this->{$this->getImportParametersMethodName()}();
+
+            $this->crud->field([
+                'name' => 'file',
+                'label' => trans('backpack-async-export::admin.column.file'),
+                'type' => 'upload',
+                'upload' => true,
+                'disk' => 'local',
+                'hint' => $parameters['private']['hint'] ?? null,
+                'attributes' => [
+                    'accept' => implode(
+                        ',',
+                        $parameters['private']['mimetypes'] ?? []
+                    ),
+                ],
+            ]);
+
+            $this->crud->enableGroupedErrors();
+        });
     }
 
     /**
-     * @throws Exception
+     * @throws Throwable
      */
     protected function addImportButtons(): void
     {
@@ -163,19 +165,20 @@ trait HasImportButton
     }
 
     /**
-     * @throws Exception
+     * @throws Throwable
      */
     protected function checkImportInterfaceImplementation(): void
     {
-        if (!$this instanceof ImportableCrud) {
-            throw new Exception(sprintf('%s need to implement %s', self::class, ImportableCrud::class));
-        }
+        throw_unless(
+            $this instanceof ImportableCrud,
+            new Exception(sprintf('%s need to implement %s', self::class, ImportableCrud::class))
+        );
     }
 
     /**
-     * @throws Exception
+     * @throws Throwable
      */
-    protected function setupImportRoutes($segment, $routeName, $controller)
+    protected function setupImportRoutes($segment, $routeName, $controller): void
     {
         $this->checkImportInterfaceImplementation();
 

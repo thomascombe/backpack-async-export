@@ -24,7 +24,7 @@
 @endsection
 
 @section('content')
-    <div class="row">
+    <div class="row" bp-section="crud-operation-update">
         <div class="{{ $crud->getEditContentClass() }}">
             @include('crud::inc.grouped_errors')
 
@@ -34,11 +34,10 @@
                 @includeFirst(
                   [
                     'vendor.backpack.crud.form_content',
-                    'crud::form_content'
+                    'crud::form_content',
                   ],
                   [
                     'fields' => $crud->fields(),
-                    'action' => 'edit',
                   ]
                 )
 
@@ -47,8 +46,7 @@
                     <div class="btn-group" role="group">
                         <button type="submit" class="btn btn-success">
                             <span class="la la-save" role="presentation" aria-hidden="true"></span> &nbsp;
-                            <span
-                                data-value="@lang('backpack-async-export::admin.button.import')">@lang('backpack-async-export::admin.button.import')</span>
+                            <span data-value="@lang('backpack-async-export::admin.button.import')">@lang('backpack-async-export::admin.button.import')</span>
                         </button>
                     </div>
 

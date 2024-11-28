@@ -28,7 +28,7 @@
         <div class="{{ $crud->getEditContentClass() }}">
             @include('crud::inc.grouped_errors')
 
-            <form action="{{ url($crud->route . '/import') }}" enctype="multipart/form-data" method="post">
+            <form action="{{ $action }}" enctype="multipart/form-data" method="post">
                 @csrf
 
                 @includeFirst(

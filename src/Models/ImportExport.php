@@ -59,6 +59,9 @@ class ImportExport extends Model implements ImportExportInterface
         self::COLUMN_STATUS => ImportExportStatus::class,
     ];
 
+    /**
+     * @var array|string[]
+     */
     protected array $dates = [
         self::COLUMN_COMPLETED_AT,
     ];
@@ -68,7 +71,7 @@ class ImportExport extends Model implements ImportExportInterface
         return $this->belongsTo(config('backpack-async-import-export.user_model'));
     }
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
         ImportExport::saving(function (ImportExport $export) {
@@ -128,7 +131,7 @@ class ImportExport extends Model implements ImportExportInterface
     protected function isReady(): Attribute
     {
         return Attribute::make(
-            get: fn (): bool => ImportExportStatus::Successful === $this->{ImportExport::COLUMN_STATUS}
+            get: fn(): bool => ImportExportStatus::Successful === $this->{ImportExport::COLUMN_STATUS}
                 && Storage::disk($this->disk)->exists($this->{self::COLUMN_FILENAME}),
         );
     }

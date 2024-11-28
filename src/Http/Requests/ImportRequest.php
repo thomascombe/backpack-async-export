@@ -8,6 +8,9 @@ class ImportRequest extends FormRequest
 {
     const PARAM_FILE = 'file';
 
+    /**
+     * @return array<string, mixed>
+     */
     public function rules(): array
     {
         return [

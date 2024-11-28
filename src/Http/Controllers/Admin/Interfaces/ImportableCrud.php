@@ -8,5 +8,8 @@ interface ImportableCrud
 {
     public function getImport(): ImportExport;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getImportParameters(): array;
 }

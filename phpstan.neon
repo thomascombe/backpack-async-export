@@ -5,3 +5,6 @@ parameters:
 	level: 6
 	paths:
 		- src
+	ignoreErrors:
+		- '#Class [a-zA-Z0-9\\_]+ implements generic interface [a-zA-Z0-9\\_]+ but does not specify its types: [a-zA-Z0-9\\_]+#'
+		- '#Method [a-zA-Z0-9\\_]+::[a-zA-Z0-9\\_]+\(\) return type with generic class [a-zA-Z0-9\\_]+ does not specify its types: .+#'

@@ -27,9 +27,9 @@
     "require-dev": {
         "laravel/scout": "^10.10",
         "nunomaduro/collision": "^8.1",
-        "nunomaduro/larastan": "^2.0",
+        "nunomaduro/larastan": "^3.0",
         "orchestra/testbench": "^9.0",
-        "phpstan/phpstan": "^1.10",
+        "phpstan/phpstan": "^2.0",
         "phpunit/phpunit": "^10.1",
         "squizlabs/php_codesniffer": "^3.7",
         "vimeo/psalm": "^5.0"

@@ -32,7 +32,9 @@ trait HasImportButton
 
         $this->data['crud'] = $this->crud;
         $this->data['title'] = $this->crud->getTitle();
-        $this->data['action'] = url($this->crud->route . '/import');
+        $this->data['action'] = url(
+            $this->crud->route . '/' . config('backpack-async-import-export.admin_import_route'),
+        );
 
         return view('backpack-async-export::pages.import', $this->data);
     }

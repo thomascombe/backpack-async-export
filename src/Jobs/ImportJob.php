@@ -25,7 +25,7 @@ class ImportJob implements ShouldQueue
      * @param  array<string, mixed> $exportParameters
      */
     public function __construct(
-        private ImportExport $export,
+        private readonly ImportExport $export,
         private array $exportParameters
     ) {
     }
@@ -55,7 +55,7 @@ class ImportJob implements ShouldQueue
             Excel::import(
                 $importObject,
                 $this->export->{ImportExport::COLUMN_FILENAME},
-                config('backpack-async-import-export.disk')
+                $this->export->{ImportExport::COLUMN_DISK},
             );
 
             $this->export->{ImportExport::COLUMN_STATUS} = ImportExportStatus::Successful;

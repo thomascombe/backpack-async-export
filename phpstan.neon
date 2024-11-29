@@ -2,20 +2,11 @@ includes:
     - ./vendor/nunomaduro/larastan/extension.neon
 
 parameters:
-
-    paths:
-        - src/
-
-    # Level 9 is the highest level
-    level: 6
-
-#    ignoreErrors:
-#        - '#PHPDoc tag @var#'
-#
-#    excludePaths:
-#        - ./*/*/FileToBeExcluded.php
-#
-#    checkMissingIterableValueType: false
-    checkMissingIterableValueType: false
-
-    checkGenericClassInNonGenericObjectType: false
+	level: 6
+	paths:
+		- src
+	ignoreErrors:
+		- '#Class [a-zA-Z0-9\\_]+ implements generic interface [a-zA-Z0-9\\_]+ but does not specify its types: [a-zA-Z0-9\\_]+#'
+		- '#Method [a-zA-Z0-9\\_]+::[a-zA-Z0-9\\_]+\(\) return type with generic class [a-zA-Z0-9\\_]+ does not specify its types: .+#'
+		- '#Trait [a-zA-Z0-9\\_]+ is used zero times and is not analysed.#'
+		- '#Unable to resolve the template type TRelatedModel in call to method [a-zA-Z0-9\\_]+::[a-zA-Z0-9\\_]+\(\)#'

@@ -21,6 +21,9 @@ class ImportJob implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
+    /**
+     * @param  array<string, mixed> $exportParameters
+     */
     public function __construct(
         private ImportExport $export,
         private array $exportParameters
@@ -70,7 +73,7 @@ class ImportJob implements ShouldQueue
                     ->implode(', ');
                 throw new \Exception($message);
             }
-        } catch (\Exception|\Throwable $exception) {
+        } catch (\Throwable $exception) {
             $this->export->update([
                 ImportExport::COLUMN_STATUS => ImportExportStatus::Error,
                 ImportExport::COLUMN_ERROR => $exception->getMessage(),

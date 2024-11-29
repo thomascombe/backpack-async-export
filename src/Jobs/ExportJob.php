@@ -26,9 +26,11 @@ class ExportJob implements ShouldQueue
     use SerializesModels;
 
     private ImportExport $export;
-    private array $exportParameters;
 
-    public function __construct(ImportExport $export, array $exportParameters)
+    /**
+     * @param  array<string, mixed> $exportParameters
+     */
+    public function __construct(ImportExport $export, private array $exportParameters)
     {
         $this->export = $export;
         $this->exportParameters = $exportParameters;

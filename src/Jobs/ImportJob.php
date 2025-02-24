@@ -25,8 +25,8 @@ class ImportJob implements ShouldQueue
      * @param  array<string, mixed> $exportParameters
      */
     public function __construct(
-        private readonly ImportExport $export,
-        private array $exportParameters
+        protected readonly ImportExport $export,
+        protected array $exportParameters
     ) {
     }
 

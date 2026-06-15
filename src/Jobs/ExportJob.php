@@ -66,7 +66,7 @@ class ExportJob implements ShouldQueue
             $result = Excel::store(
                 $instance,
                 $this->export->{ImportExport::COLUMN_FILENAME},
-                config('backpack-async-import-export.disk')
+                $this->export->{ImportExport::COLUMN_DISK} ?: config('backpack-async-import-export.disk'),
             );
 
             /** @phpstan-ignore-next-line  */

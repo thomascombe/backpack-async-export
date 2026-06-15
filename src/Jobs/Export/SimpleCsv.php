@@ -47,7 +47,7 @@ class SimpleCsv implements ShouldQueue
             $this->openFile();
             $this->addUtf8Header();
 
-            fputcsv($this->handle, $this->export->headings());
+            fputcsv($this->handle, $this->export->headings(), escape: "\\");
 
             $this->export->query()->chunk(
                 $this->export->getChunkSize(),
@@ -56,7 +56,8 @@ class SimpleCsv implements ShouldQueue
                         function (Eloquent $model): void {
                             fputcsv(
                                 $this->handle,
-                                $this->export->map($model)
+                                $this->export->map($model),
+                                escape: "\\",
                             );
                         }
                     );

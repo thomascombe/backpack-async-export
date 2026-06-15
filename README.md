@@ -25,6 +25,7 @@ composer require thomascombe/backpack-async-export
 | 2.x     | ^8.1       | ^9.0 - ^10.0        | ~5.5 - ~6.0  |
 | 3.x     | ^8.1       | ^10.0               | ~6.0         |
 | 4.x     | ^8.2       | ^11.0               | ~6.0         |
+| 5.x     | ^8.2       | ^12.0 - ^13.0       | ^7.0         |
 
 You can publish and run the migrations with:
 
